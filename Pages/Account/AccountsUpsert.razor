@@ -1,0 +1,56 @@
+﻿@using PersonalFinance.Helpers.APIs;
+@using PersonalFinance.Helpers.Routes;
+@using PersonalFinance.Helpers;
+@using PersonalFinance.Models;
+@attribute [
+    Route(AccountsRoutes.Addition),
+    Route(AccountsRoutes.Edition)
+]
+@inherits General
+
+@if (Loading) {
+    <p>Carregando...</p>
+}
+else {
+    <h3>AccountsUpsert</h3>
+
+    <h2>Edit Account</h2>
+
+    <EditForm Model="Account" OnValidSubmit="Confirm">
+        <input type="hidden" name="Id" value="@(Account.Id)" />
+
+        <div>
+            <label for="Name">Name:</label>
+            <input type="text" id="Name" name="Name" @bind-value="@(Account.Name)" required />
+        </div>
+
+        <div>
+            <label for="OpeningBalance">Opening Balance:</label>
+            <input type="number" id="OpeningBalance" name="OpeningBalance" step="0.01" @bind-value="@(Account.OpeningBalance)" />
+        </div>
+
+        <div>
+            <input type="submit" value="Save" />
+        </div>
+    </EditForm>
+}
+
+
+@code {
+    [Parameter] public int Id { get; set; }
+    Account Account { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Account = await AccountsAPI.Get(Id);
+    }
+
+    async Task Confirm()
+    {
+        
+    }
+
+    #region VALIDATIONS
+    bool Loading => Account is null;
+    #endregion
+}

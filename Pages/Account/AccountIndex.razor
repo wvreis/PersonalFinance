@@ -1,11 +1,11 @@
-﻿@attribute [
-    Route(AccountsRoutes.Index)
-]
-@inherits General
-@using PersonalFinance.Helpers.APIs;
+﻿@using PersonalFinance.Helpers.APIs;
 @using PersonalFinance.Helpers;
 @using PersonalFinance.Helpers.Routes;
 @using PersonalFinance.Models;
+@attribute [
+    Route(AccountsRoutes.Index)
+]
+@inherits General
 
 @if (Loading) {
     <p>Carregando...</p>
@@ -21,7 +21,7 @@ else {
                     Name
                 </th>
                 <th>
-                    OpeningBalance
+                    Saldo Inicial
                 </th>
                 <th></th>
             </tr>
@@ -36,7 +36,7 @@ else {
                     @item.OpeningBalance
                 </td>
                 <td>
-                    <a >Edit</a> |
+                    <a href="@AccountsRoutes.GoToEdition(item.Id)">Edit</a> |
                     <a >Delete</a>
                 </td>
             </tr>
