@@ -1,0 +1,59 @@
+﻿@attribute [
+    Route(AccountsRoutes.Index)
+]
+@inherits General
+@using PersonalFinance.Helpers.APIs;
+@using PersonalFinance.Helpers;
+@using PersonalFinance.Helpers.Routes;
+@using PersonalFinance.Models;
+
+@if (Loading) {
+    <p>Carregando...</p>
+}
+else {
+    <p>
+        <a>Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    OpeningBalance
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Accounts) {
+            <tr>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.OpeningBalance
+                </td>
+                <td>
+                    <a >Edit</a> |
+                    <a >Delete</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>
+}
+
+@code{
+    List<Account> Accounts { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Accounts = await AccountsAPI.GetSearch();
+    }
+
+    #region VALIDATIONS
+    bool Loading => Accounts is null;
+    #endregion
+}
