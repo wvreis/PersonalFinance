@@ -12,25 +12,29 @@
     <p>Carregando...</p>
 }
 else {
-    <h3>AccountsUpsert</h3>
+    <h3>@GetHeaderText()</h3>
 
-    <h2>Edit Account</h2>
+    <h3>Conta</h3>
 
     <EditForm Model="Account" OnValidSubmit="Confirm">
         <input type="hidden" name="Id" value="@(Account.Id)" />
 
         <div>
-            <label for="Name">Name:</label>
+            <label for="Name">Descrição:</label>
             <input type="text" id="Name" name="Name" @bind-value="@(Account.Name)" required />
         </div>
 
         <div>
-            <label for="OpeningBalance">Opening Balance:</label>
-            <input type="number" id="OpeningBalance" name="OpeningBalance" step="0.01" @bind-value="@(Account.OpeningBalance)" />
+            <label for="OpeningBalance">Saldo Inicial:</label>
+            <input type="number" id="OpeningBalance" step="0.01" @bind-value="@(Account.OpeningBalance)" />
         </div>
 
         <div>
-            <input type="submit" value="Save" />
+            <input type="submit" value="Confirmar" />
+
+            @if (!IsNew) {
+                <input type="button" @onclick="@Remove" value="Excluir" />
+            }
         </div>
     </EditForm>
 }
@@ -42,15 +46,50 @@ else {
 
     protected override async Task OnInitializedAsync()
     {
-        Account = await AccountsAPI.Get(Id);
+        Account =  IsNew ?  new() :await AccountsAPI.Get(Id);
     }
 
     async Task Confirm()
     {
-        
+        try {
+            var result = IsNew ? await Addition() : await Edition();
+
+            if (!result.IsSuccessStatusCode)
+                throw new Exception(result.ReasonPhrase);
+
+            NavigationManager.NavigateTo(AccountsRoutes.GoToIndex());
+        }
+        catch (Exception ex) {
+
+            throw ex;
+        }
     }
+
+    async Task Remove()
+    {
+        try {
+            var result = await AccountsAPI.DeleteAccount(Id);
+
+            if (!result.IsSuccessStatusCode)
+                throw new Exception(result.ReasonPhrase);
+
+            NavigationManager.NavigateTo(AccountsRoutes.GoToIndex());
+        }
+        catch (Exception ex) {
+
+            throw ex;
+        }
+    }
+
+    async Task<HttpResponseMessage> Addition() => await AccountsAPI.PostAccount(Account);
+    async Task<HttpResponseMessage> Edition() => await AccountsAPI.PutAccount(Id, Account);
+
+    #region AUXILIARY
+    string GetHeaderText() => IsNew ? "Incluindo" : "Editando";
+    #endregion
 
     #region VALIDATIONS
     bool Loading => Account is null;
+    bool IsNew => Id == 0;
     #endregion
 }

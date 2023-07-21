@@ -4,6 +4,10 @@ public static class AccountsRoutes {
     public const string Addition = $"{Index}/addition";
     public const string Edition = $"{Index}/edition/{{id:int}}";
 
+    public static string GoToAddition() =>
+        $"{Index}/addition";
     public static string GoToEdition(int id) =>
         $"{Index}/edition/{id}";
+    public static string GoToIndex() =>
+        $"{Index}";
 }

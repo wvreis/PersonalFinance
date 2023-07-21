@@ -219,7 +219,7 @@ namespace PersonalFinance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("BankId")
+                    b.Property<int?>("BankId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -309,9 +309,7 @@ namespace PersonalFinance.Migrations
                 {
                     b.HasOne("PersonalFinance.Models.Bank", "Bank")
                         .WithMany()
-                        .HasForeignKey("BankId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BankId");
 
                     b.Navigation("Bank");
                 });

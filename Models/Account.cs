@@ -13,7 +13,7 @@ public class Account {
 
     #region FK
     [ForeignKey(nameof(BankId))]
-    public int BankId { get; set; }
-    public Bank Bank { get; set; }
+    public int? BankId { get; set; }
+    public Bank? Bank { get; set; }
     #endregion
 }

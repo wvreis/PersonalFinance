@@ -12,13 +12,15 @@
 }
 else {
     <p>
-        <a>Create New</a>
+        <a href="@AccountsRoutes.GoToAddition()">
+            Nova Conta
+        </a>
     </p>
     <table class="table">
         <thead>
             <tr>
                 <th>
-                    Name
+                    Descrição
                 </th>
                 <th>
                     Saldo Inicial
@@ -36,8 +38,7 @@ else {
                     @item.OpeningBalance
                 </td>
                 <td>
-                    <a href="@AccountsRoutes.GoToEdition(item.Id)">Edit</a> |
-                    <a >Delete</a>
+                    <a href="@AccountsRoutes.GoToEdition(item.Id)">Editar</a>
                 </td>
             </tr>
     }

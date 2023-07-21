@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PersonalFinance.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class First : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -178,7 +178,7 @@ namespace PersonalFinance.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     OpeningBalance = table.Column<double>(type: "REAL", nullable: false),
-                    BankId = table.Column<int>(type: "INTEGER", nullable: false)
+                    BankId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -187,8 +187,7 @@ namespace PersonalFinance.Migrations
                         name: "FK_Accounts_Banks_BankId",
                         column: x => x.BankId,
                         principalTable: "Banks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(

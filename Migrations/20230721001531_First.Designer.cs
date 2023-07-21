@@ -11,8 +11,8 @@ using PersonalFinance.Data;
 namespace PersonalFinance.Migrations
 {
     [DbContext(typeof(AppDb))]
-    [Migration("20230717020948_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230721001531_First")]
+    partial class First
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -222,7 +222,7 @@ namespace PersonalFinance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("BankId")
+                    b.Property<int?>("BankId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -312,9 +312,7 @@ namespace PersonalFinance.Migrations
                 {
                     b.HasOne("PersonalFinance.Models.Bank", "Bank")
                         .WithMany()
-                        .HasForeignKey("BankId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BankId");
 
                     b.Navigation("Bank");
                 });

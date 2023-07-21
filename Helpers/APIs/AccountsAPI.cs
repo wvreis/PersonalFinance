@@ -19,6 +19,21 @@ public class AccountsAPI {
         await _http.GetFromJsonAsync<List<Account>>(ApiRoute.GetSearch(searchInfo));
     #endregion
 
+    #region POST
+    public async Task<HttpResponseMessage> PostAccount(Account account) =>
+        await _http.PostAsJsonAsync(ApiRoute.PostAccount(), account);
+    #endregion
+
+    #region PUT
+    public async Task<HttpResponseMessage> PutAccount(int id, Account account) =>
+        await _http.PutAsJsonAsync(ApiRoute.PutAccount(id), account);
+    #endregion
+
+    #region DELETE
+    public async Task<HttpResponseMessage> DeleteAccount(int id) =>
+        await _http.DeleteAsync(ApiRoute.DeleteAccount(id));
+    #endregion
+
     public static class ApiRoute
     {
         public const string URL = $"api{AccountsRoutes.Index}";
@@ -30,6 +45,21 @@ public class AccountsAPI {
         public static string GetSearch(string searchInfo) =>
             $"./{URL}/{nameof(AccountsController.GetAccounts)}?" +
             $"{nameof(searchInfo)}={searchInfo}";
+        #endregion
+
+        #region POST
+        public static string PostAccount() =>
+            $"./{URL}/{nameof(AccountsController.PostAccount)}";
+        #endregion
+
+        #region PUT
+        public static string PutAccount(int id) =>
+            $"./{URL}/{nameof(AccountsController.PutAccount)}/{id}";
+        #endregion
+
+        #region DELETE
+        public static string DeleteAccount(int id) =>
+            $"./{URL}/{nameof(AccountsController.DeleteAccount)}/{id}";
         #endregion
     }
 }
