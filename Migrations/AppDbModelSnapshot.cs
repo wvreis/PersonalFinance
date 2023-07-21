@@ -222,6 +222,9 @@ namespace PersonalFinance.Migrations
                     b.Property<int?>("BankId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("BankNumber")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");

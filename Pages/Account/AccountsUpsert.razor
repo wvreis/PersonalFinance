@@ -29,6 +29,13 @@ else {
             <input type="number" id="OpeningBalance" step="0.01" @bind-value="@(Account.OpeningBalance)" />
         </div>
 
+        <InputSelect @bind-Value="@Account.BankNumber">
+            <option value="">Selecione um Banco...</option>
+            @foreach (var bank in Banks) {
+                <option value="@bank.Number">@bank.Name</option>
+            }
+        </InputSelect>
+
         <div>
             <input type="submit" value="Confirmar" />
 
@@ -44,8 +51,12 @@ else {
     [Parameter] public int Id { get; set; }
     Account Account { get; set; }
 
+    List<Bank> Banks;
+
     protected override async Task OnInitializedAsync()
     {
+        Banks = Data.MainBanks.GetBanks();
+
         Account =  IsNew ?  new() :await AccountsAPI.Get(Id);
     }
 

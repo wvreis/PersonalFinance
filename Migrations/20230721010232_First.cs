@@ -178,6 +178,7 @@ namespace PersonalFinance.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     OpeningBalance = table.Column<double>(type: "REAL", nullable: false),
+                    BankNumber = table.Column<int>(type: "INTEGER", nullable: true),
                     BankId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>

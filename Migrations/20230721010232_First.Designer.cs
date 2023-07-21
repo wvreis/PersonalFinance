@@ -11,7 +11,7 @@ using PersonalFinance.Data;
 namespace PersonalFinance.Migrations
 {
     [DbContext(typeof(AppDb))]
-    [Migration("20230721001531_First")]
+    [Migration("20230721010232_First")]
     partial class First
     {
         /// <inheritdoc />
@@ -223,6 +223,9 @@ namespace PersonalFinance.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("BankId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("BankNumber")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
