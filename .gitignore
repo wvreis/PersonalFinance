@@ -368,4 +368,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Connectio strings
-appsettings.Development.json
+*.Development.json
