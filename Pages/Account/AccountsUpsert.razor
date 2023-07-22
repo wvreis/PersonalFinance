@@ -12,38 +12,84 @@
     <p>Carregando...</p>
 }
 else {
-    <h3>@GetHeaderText()</h3>
+    <header>@GetHeaderText() Conta</header>
 
-    <h3>Conta</h3>
+    <RadzenTemplateForm Data="Account" Submit="@((Account args) => Confirm())">
+        <RadzenRow Gap="width: 100%">
+            <RadzenColumn Size="12" SizeMD="6">
+                <RadzenStack Gap="1rem">
+                    <RadzenFieldset Text="Dados">
+                        <RadzenRow AlignItems="AlignItems.Center">
 
-    <EditForm Model="Account" OnValidSubmit="Confirm">
-        <input type="hidden" name="Id" value="@(Account.Id)" />
+                            <RadzenColumn>
+                                <RadzenLabel Text="Descrição" Style="width: 100%"/>
+                                <RadzenTextBox 
+                                    @bind-Value="Account.Name"
+                                    Style="width: 80%;" 
+                                    Name="Name" />
+                            </RadzenColumn>
 
-        <div>
-            <label for="Name">Descrição:</label>
-            <input type="text" id="Name" name="Name" @bind-value="@(Account.Name)" required />
-        </div>
+                            <RadzenColumn>
+                                <RadzenLabel Text="Saldo Inicial" Style="width: 100%" />
+                                <RadzenNumeric 
+                                    TValue="double" 
+                                    Format="c" 
+                                    @bind-Value=@Account.OpeningBalance 
+                                    Style="width: 80%"/>
+                            </RadzenColumn>
 
-        <div>
-            <label for="OpeningBalance">Saldo Inicial:</label>
-            <input type="number" id="OpeningBalance" step="0.01" @bind-value="@(Account.OpeningBalance)" />
-        </div>
+                            <RadzenColumn Size="12" SizeMD="6">
+                                <RadzenLabel Text="Banco" Style="width: 100%" />
+                                <RadzenDropDown
+                                    @bind-Value="Account.BankId" 
+                                    AllowClear="true" 
+                                    AllowFiltering="true"
+                                    Placeholder="Selecione..." 
+                                    Data="@Banks" 
+                                    Style="width: 80%;" 
+                                    TextProperty="Name" 
+                                    ValueProperty="Id" 
+                                    Name="BankId">
+                                </RadzenDropDown>
+                            </RadzenColumn>
 
-        <InputSelect @bind-Value="@Account.BankNumber">
-            <option value="">Selecione um Banco...</option>
-            @foreach (var bank in Banks) {
-                <option value="@bank.Number">@bank.Name</option>
-            }
-        </InputSelect>
+                        </RadzenRow>
+                    </RadzenFieldset>
+                </RadzenStack>
+            </RadzenColumn>
+        </RadzenRow>
 
-        <div>
-            <input type="submit" value="Confirmar" />
+        <RadzenStack 
+            Orientation="Orientation.Horizontal" 
+            JustifyContent="JustifyContent.End" 
+            Gap="1rem"
+            Class="rz-mt-8 rz-mb-4">
+
+            <RadzenButton 
+                ButtonType="ButtonType.Submit" 
+                Size="ButtonSize.Large" 
+                Icon="save" 
+                Text="Salvar" />
+
+            <RadzenButton 
+                ButtonStyle="ButtonStyle.Light" 
+                Variant="Variant.Flat" 
+                Size="ButtonSize.Large" 
+                Icon="cancel" 
+                Text="Cancelar"
+                Click="@(() => Cancel())" />
 
             @if (!IsNew) {
-                <input type="button" @onclick="@Remove" value="Excluir" />
+                <RadzenButton 
+                    ButtonStyle="ButtonStyle.Danger"
+                    Variant="Variant.Flat"
+                    Size="ButtonSize.Large"
+                    Icon="remove"
+                    Text="Excluir"
+                    Click="@(() => Remove())"/>
             }
-        </div>
-    </EditForm>
+        </RadzenStack>
+    </RadzenTemplateForm>
 }
 
 
@@ -55,7 +101,7 @@ else {
 
     protected override async Task OnInitializedAsync()
     {
-        Banks = Data.MainBanks.GetBanks();
+        Banks = await AccountsAPI.GetBanks();
 
         Account =  IsNew ?  new() :await AccountsAPI.Get(Id);
     }
@@ -63,6 +109,8 @@ else {
     async Task Confirm()
     {
         try {
+            Account.Bank = null;
+
             var result = IsNew ? await Addition() : await Edition();
 
             if (!result.IsSuccessStatusCode)
@@ -74,6 +122,11 @@ else {
 
             throw ex;
         }
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo(AccountsRoutes.Index);
     }
 
     async Task Remove()

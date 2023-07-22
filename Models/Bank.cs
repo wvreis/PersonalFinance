@@ -10,4 +10,9 @@ public class Bank {
 
     [Range(1, int.MaxValue)]
     public int Number { get; set; }
+
+    public Bank()
+    {
+            
+    }
 }

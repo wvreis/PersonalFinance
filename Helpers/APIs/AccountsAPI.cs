@@ -17,6 +17,9 @@ public class AccountsAPI {
 
     public async Task<List<Account>> GetSearch(string searchInfo = null) =>
         await _http.GetFromJsonAsync<List<Account>>(ApiRoute.GetSearch(searchInfo));
+
+    public async Task<List<Bank>> GetBanks() =>
+        await _http.GetFromJsonAsync<List<Bank>>(ApiRoute.GetBanks());
     #endregion
 
     #region POST
@@ -45,6 +48,9 @@ public class AccountsAPI {
         public static string GetSearch(string searchInfo) =>
             $"./{URL}/{nameof(AccountsController.GetAccounts)}?" +
             $"{nameof(searchInfo)}={searchInfo}";
+
+        public static string GetBanks() =>
+            $"./{URL}/{nameof(AccountsController.GetBanks)}";
         #endregion
 
         #region POST

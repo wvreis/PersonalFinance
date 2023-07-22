@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PersonalFinance.Areas.Identity;
 using PersonalFinance.Data;
+using PersonalFinance.Helpers;
 using PersonalFinance.Helpers.APIs;
 using PersonalFinance.Services;
+using System.Net.Mime;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,14 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 
 builder.Services.AddHttpClient<HttpClient>();
 builder.Services.AddScoped<HttpContextAccessor>();
+
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(options => {
+    options.InvalidModelStateResponseFactory = context => {
+        var result = new ValidationFailedResult(context.ModelState);
+        result.ContentTypes.Add(MediaTypeNames.Application.Json);
+        return result;
+    };
+});
 
 builder.Services.AddScoped<HttpClient>(s => {
     try {

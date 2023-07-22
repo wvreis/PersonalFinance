@@ -11,8 +11,8 @@ using PersonalFinance.Data;
 namespace PersonalFinance.Migrations
 {
     [DbContext(typeof(AppDb))]
-    [Migration("20230721010232_First")]
-    partial class First
+    [Migration("20230722012243_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -225,9 +225,6 @@ namespace PersonalFinance.Migrations
                     b.Property<int?>("BankId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("BankNumber")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -314,10 +311,15 @@ namespace PersonalFinance.Migrations
             modelBuilder.Entity("PersonalFinance.Models.Account", b =>
                 {
                     b.HasOne("PersonalFinance.Models.Bank", "Bank")
-                        .WithMany()
+                        .WithMany("Accounts")
                         .HasForeignKey("BankId");
 
                     b.Navigation("Bank");
+                });
+
+            modelBuilder.Entity("PersonalFinance.Models.Bank", b =>
+                {
+                    b.Navigation("Accounts");
                 });
 #pragma warning restore 612, 618
         }

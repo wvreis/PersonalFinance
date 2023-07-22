@@ -12,8 +12,13 @@ public class Account {
     public double OpeningBalance { get; set; }
 
     #region FK
-    [ForeignKey(nameof(BankNumber))]
-    public int? BankNumber { get; set; }
+    [ForeignKey(nameof(BankId))]
+    public int? BankId { get; set; }
     public Bank? Bank { get; set; }
     #endregion
+
+    public Account()
+    {
+        Bank = new();
+    }
 }

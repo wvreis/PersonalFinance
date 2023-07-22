@@ -16,47 +16,79 @@ public class AccountsController : ControllerBase {
     {
         _context = context;
     }
-
+    #region Get
     [Route($"{nameof(GetAccounts)}")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Account>>> GetAccounts(string searchInfo = null)
     {
-        if (_context.Accounts == null) {
-            return NotFound();
+        try {
+            if (_context.Accounts == null) {
+                return NotFound();
+            }
+
+            searchInfo = API.UnprocessString(searchInfo);
+
+            return await _context.Accounts
+                .Include(x => x.Bank)
+                .ToListAsync();
         }
+        catch (Exception ex) {
 
-        searchInfo = API.UnprocessString(searchInfo);
-
-        return await _context.Accounts.ToListAsync();
+            return BadRequest(ex.Message);
+        }
     }
 
     [Route($"{nameof(GetAccount)}/{{id}}")]
     [HttpGet]
     public async Task<ActionResult<Account>> GetAccount(int id)
     {
-        if (_context.Accounts == null) {
-            return NotFound();
-        }
-        var account = await _context.Accounts.FindAsync(id);
+        try {
+            if (_context.Accounts == null) {
+                return NotFound();
+            }
+            var account = await _context.Accounts.FindAsync(id);
 
-        if (account == null) {
-            return NotFound();
-        }
+            if (account == null) {
+                return NotFound();
+            }
 
-        return account;
+            return account;
+        }
+        catch (Exception ex) {
+
+            return BadRequest(ex.Message);
+        }
     }
+
+    [Route($"{nameof(GetBanks)}")]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Bank>>> GetBanks()
+    {
+        try {
+            if (_context.Accounts == null) {
+                return NotFound();
+            }
+
+            return await _context.Banks.ToListAsync();
+        }
+        catch (Exception ex) {
+
+            return BadRequest(ex.Message);
+        }
+    }
+    #endregion
 
     [Route($"{nameof(PutAccount)}/{{id}}")]
     [HttpPut]
     public async Task<IActionResult> PutAccount(int id, Account account)
     {
-        if (id != account.Id) {
-            return BadRequest();
-        }
-
-        _context.Entry(account).State = EntityState.Modified;
-
         try {
+            if (id != account.Id) {
+                return BadRequest();
+            }
+
+            _context.Entry(account).State = EntityState.Modified;
+            
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException) {
@@ -75,13 +107,19 @@ public class AccountsController : ControllerBase {
     [HttpPost]
     public async Task<ActionResult<Account>> PostAccount(Account account)
     {
-        if (_context.Accounts == null) {
-            return Problem("Entity set 'AppDb.Accounts'  is null.");
-        }
-        _context.Accounts.Add(account);
-        await _context.SaveChangesAsync();
+        try {
+            if (_context.Accounts == null) {
+                return Problem("Entity set 'AppDb.Accounts'  is null.");
+            }
+            _context.Accounts.Add(account);
+            await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetAccount", new { id = account.Id }, account);
+            return CreatedAtAction(nameof(GetAccount), new { id = account.Id }, account);
+        }
+        catch (Exception ex) {
+
+            return BadRequest(ex.Message);
+        }
     }
 
     [Route($"{nameof(DeleteAccount)}/{{id}}")]

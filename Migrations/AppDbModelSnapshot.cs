@@ -222,9 +222,6 @@ namespace PersonalFinance.Migrations
                     b.Property<int?>("BankId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("BankNumber")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -311,10 +308,15 @@ namespace PersonalFinance.Migrations
             modelBuilder.Entity("PersonalFinance.Models.Account", b =>
                 {
                     b.HasOne("PersonalFinance.Models.Bank", "Bank")
-                        .WithMany()
+                        .WithMany("Accounts")
                         .HasForeignKey("BankId");
 
                     b.Navigation("Bank");
+                });
+
+            modelBuilder.Entity("PersonalFinance.Models.Bank", b =>
+                {
+                    b.Navigation("Accounts");
                 });
 #pragma warning restore 612, 618
         }

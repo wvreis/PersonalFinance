@@ -8,7 +8,12 @@ public class AppDb : IdentityDbContext {
         : base(options)
     {
     }
-    
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+    }
+
     public DbSet<Bank> Banks { get; set; }
     public DbSet<Account> Accounts { get; set; }
 }
