@@ -6,19 +6,20 @@ public class Account {
     [Key]
     public int Id { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "A Descrição precisa ser informada.")]
     public string Name { get; set; }
 
     public double OpeningBalance { get; set; }
 
     #region FK
     [ForeignKey(nameof(BankId))]
-    public int? BankId { get; set; }
+    [Range(1, int.MaxValue, ErrorMessage = "Um Banco deve ser selecionado.")]
+    public int BankId { get; set; }
+
     public Bank? Bank { get; set; }
     #endregion
 
     public Account()
     {
-        Bank = new();
     }
 }

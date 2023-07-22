@@ -179,7 +179,7 @@ namespace PersonalFinance.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     OpeningBalance = table.Column<double>(type: "double precision", nullable: false),
-                    BankId = table.Column<int>(type: "integer", nullable: true)
+                    BankId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -188,7 +188,8 @@ namespace PersonalFinance.Migrations
                         name: "FK_Accounts_Banks_BankId",
                         column: x => x.BankId,
                         principalTable: "Banks",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

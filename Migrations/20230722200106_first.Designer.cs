@@ -12,7 +12,7 @@ using PersonalFinance.Data;
 namespace PersonalFinance.Migrations
 {
     [DbContext(typeof(AppDb))]
-    [Migration("20230722040708_first")]
+    [Migration("20230722200106_first")]
     partial class first
     {
         /// <inheritdoc />
@@ -233,7 +233,7 @@ namespace PersonalFinance.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BankId")
+                    b.Property<int>("BankId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -325,7 +325,9 @@ namespace PersonalFinance.Migrations
                 {
                     b.HasOne("PersonalFinance.Models.Bank", "Bank")
                         .WithMany()
-                        .HasForeignKey("BankId");
+                        .HasForeignKey("BankId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Bank");
                 });

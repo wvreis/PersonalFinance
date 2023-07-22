@@ -14,7 +14,9 @@
 else {
     <header>@GetHeaderText() Conta</header>
 
-    <RadzenTemplateForm Data="Account" Submit="@((Account args) => Confirm())">
+    <RadzenTemplateForm Data="Account" Submit="@((Account args) => Confirm())" InvalidSubmit="InvalidConfirmation" TItem="Account">
+        <DataAnnotationsValidator />
+
         <RadzenRow Gap="width: 100%">
             <RadzenColumn Size="12" SizeMD="6">
                 <RadzenStack Gap="1rem">
@@ -22,11 +24,13 @@ else {
                         <RadzenRow AlignItems="AlignItems.Center">
 
                             <RadzenColumn>
-                                <RadzenLabel Text="Descrição" Style="width: 100%"/>
+                                <RadzenLabel Text="Descrição" Style="width: 100%" Component="Name"/>
                                 <RadzenTextBox 
                                     @bind-Value="Account.Name"
                                     Style="width: 80%;" 
-                                    Name="Name" />
+                                    Name="Name"
+                                    />
+                                <ValidationMessage For="@(() => Account.Name)"/>
                             </RadzenColumn>
 
                             <RadzenColumn>
@@ -39,7 +43,7 @@ else {
                             </RadzenColumn>
 
                             <RadzenColumn Size="12" SizeMD="6">
-                                <RadzenLabel Text="Banco" Style="width: 100%" />
+                                <RadzenLabel Text="Banco" Style="width: 100%" Component="BankId"/>
                                 <RadzenDropDown
                                     @bind-Value="Account.BankId" 
                                     AllowClear="true" 
@@ -51,6 +55,8 @@ else {
                                     ValueProperty="Id" 
                                     Name="BankId">
                                 </RadzenDropDown>
+                                <RadzenRequiredValidator Component="BankId"/>
+                                <ValidationMessage For="@(() => Account.BankId)" />
                             </RadzenColumn>
 
                         </RadzenRow>
@@ -122,6 +128,11 @@ else {
 
             throw ex;
         }
+    }
+
+    async Task InvalidConfirmation(FormInvalidSubmitEventArgs args)
+    {
+        await DialogService.Alert(string.Join("<br/>", args.Errors), "Erro");
     }
 
     void Cancel()

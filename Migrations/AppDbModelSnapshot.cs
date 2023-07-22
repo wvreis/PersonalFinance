@@ -230,7 +230,7 @@ namespace PersonalFinance.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BankId")
+                    b.Property<int>("BankId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -244,7 +244,7 @@ namespace PersonalFinance.Migrations
 
                     b.HasIndex("BankId");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("PersonalFinance.Models.Bank", b =>
@@ -264,7 +264,7 @@ namespace PersonalFinance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Banks");
+                    b.ToTable("Banks", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -322,7 +322,9 @@ namespace PersonalFinance.Migrations
                 {
                     b.HasOne("PersonalFinance.Models.Bank", "Bank")
                         .WithMany()
-                        .HasForeignKey("BankId");
+                        .HasForeignKey("BankId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Bank");
                 });
