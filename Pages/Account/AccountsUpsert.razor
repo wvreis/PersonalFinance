@@ -132,6 +132,19 @@ else {
     async Task Remove()
     {
         try {
+            
+            var confirmed = await DialogService
+                .Confirm(
+                    "Deseja Confirmar a Exclusão?", 
+                    "Exclusão", 
+                    new ConfirmOptions(){ 
+                        OkButtonText = "Sim", CancelButtonText = "Não"
+                    }
+                );
+
+            if (!(bool)confirmed)
+                return;
+
             var result = await AccountsAPI.DeleteAccount(Id);
 
             if (!result.IsSuccessStatusCode)

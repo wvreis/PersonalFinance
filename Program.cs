@@ -1,3 +1,4 @@
+global using Radzen;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -24,6 +25,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 
 builder.Services.AddHttpClient<HttpClient>();
 builder.Services.AddScoped<HttpContextAccessor>();
+builder.Services.AddScoped<DialogService>();
 
 builder.Services.AddControllers().ConfigureApiBehaviorOptions(options => {
     options.InvalidModelStateResponseFactory = context => {
