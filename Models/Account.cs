@@ -2,14 +2,20 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PersonalFinance.Models; 
+
+public enum AccountStatus { Active, Inactive }
+
 public class Account {    
     [Key]
     public int Id { get; set; }
 
     [Required(ErrorMessage = "A Descrição precisa ser informada.")]
+    [StringLength(200)]
     public string Description { get; set; }
 
     public double OpeningBalance { get; set; }
+
+    public AccountStatus Status { get; set; }
 
     #region FK
     [ForeignKey(nameof(BankId))]

@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PersonalFinance.Models; 
+namespace PersonalFinance.Models;
 
-public enum AccountTypeStatus { Active, Inactive }
+public enum TransactionTypeStatus { Active, Inactive }
 
-public class AccountType {
+public class TransactionType {
     [Key]
     public int Id { get; set; }
 
@@ -12,5 +12,5 @@ public class AccountType {
     [StringLength(100)]
     public string Description { get; set; }
 
-    public AccountTypeStatus Status { get; set; }
+    public TransactionTypeStatus Status { get; set; }
 }
