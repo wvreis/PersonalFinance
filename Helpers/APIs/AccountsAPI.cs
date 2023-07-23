@@ -20,6 +20,9 @@ public class AccountsAPI {
 
     public async Task<List<Bank>> GetBanks() =>
         await _http.GetFromJsonAsync<List<Bank>>(ApiRoute.GetBanks());
+
+    public async Task<List<AccountType>> GerAccountTypes() =>
+        await _http.GetFromJsonAsync<List<AccountType>>(ApiRoute.GetAccountTypes());
     #endregion
 
     #region POST
@@ -51,6 +54,9 @@ public class AccountsAPI {
 
         public static string GetBanks() =>
             $"./{URL}/{nameof(AccountsController.GetBanks)}";
+
+        public static string GetAccountTypes() =>
+            $"./{URL}/{nameof(AccountsController.GetAccountTypes)}";
         #endregion
 
         #region POST

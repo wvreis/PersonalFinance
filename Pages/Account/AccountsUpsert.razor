@@ -51,12 +51,31 @@ else {
                                     Placeholder="Selecione..." 
                                     Data="@Banks" 
                                     Style="width: 80%;" 
-                                    TextProperty="Name" 
+                                    TextProperty="@(ObjectHelper.GetFullName<Bank, string>(x => x.Name))" 
                                     ValueProperty="Id" 
-                                    Name="BankId">
+                                    Name="BankId"
+                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
                                 </RadzenDropDown>
                                 <RadzenRequiredValidator Component="BankId"/>
                                 <ValidationMessage For="@(() => Account.BankId)" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="6">
+                                <RadzenLabel Text="Tipo de Conta" Style="width: 100%" Component="AccountTypeId" />
+                                <RadzenDropDown
+                                    @bind-Value="Account.AccountTypeId" 
+                                    AllowClear="true" 
+                                    AllowFiltering="true"
+                                    Placeholder="Selecione..." 
+                                    Data="@AccountTypes" 
+                                    Style="width: 80%;" 
+                                    TextProperty="@(ObjectHelper.GetFullName<AccountType, string>(x => x.Description))" 
+                                    ValueProperty="Id" 
+                                    Name="AccountTypeId"
+                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                                </RadzenDropDown>
+                                <RadzenRequiredValidator Component="AccountTypeId" />
+                                <ValidationMessage For="@(() => Account.AccountTypeId)" />
                             </RadzenColumn>
 
                         </RadzenRow>
@@ -104,10 +123,12 @@ else {
     Account Account { get; set; }
 
     List<Bank> Banks;
+    List<AccountType> AccountTypes;
 
     protected override async Task OnInitializedAsync()
     {
         Banks = await AccountsAPI.GetBanks();
+        AccountTypes = await AccountsAPI.GerAccountTypes();
 
         Account =  IsNew ?  new() :await AccountsAPI.Get(Id);
     }

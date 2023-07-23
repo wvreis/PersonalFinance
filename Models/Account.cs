@@ -15,8 +15,12 @@ public class Account {
     [ForeignKey(nameof(BankId))]
     [Range(1, int.MaxValue, ErrorMessage = "Um Banco deve ser selecionado.")]
     public int BankId { get; set; }
-
     public Bank? Bank { get; set; }
+
+    [ForeignKey(nameof(AccountTypeId))]
+    [Range(1, int.MaxValue, ErrorMessage = "O Tipo de Conta deve ser informado.")]
+    public int AccountTypeId { get; set; }
+    public AccountType? AccountType { get; set; }
     #endregion
 
     public Account()

@@ -76,6 +76,23 @@ public class AccountsController : ControllerBase {
             return BadRequest(ex.Message);
         }
     }
+
+    [Route($"{nameof(GetAccountTypes)}")]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<AccountType>>> GetAccountTypes()
+    {
+        try {
+            if (_context.AccountTypes == null) {
+                return NotFound();
+            }
+
+            return await _context.AccountTypes.ToListAsync();
+        }
+        catch (Exception ex) {
+
+            return BadRequest(ex.Message);
+        }
+    }
     #endregion
 
     [Route($"{nameof(PutAccount)}/{{id}}")]
