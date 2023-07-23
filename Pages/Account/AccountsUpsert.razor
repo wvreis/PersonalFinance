@@ -26,11 +26,11 @@ else {
                             <RadzenColumn>
                                 <RadzenLabel Text="Descrição" Style="width: 100%" Component="Name"/>
                                 <RadzenTextBox 
-                                    @bind-Value="Account.Name"
+                                    @bind-Value="Account.Description"
                                     Style="width: 80%;" 
                                     Name="Name"
                                     />
-                                <ValidationMessage For="@(() => Account.Name)"/>
+                                <ValidationMessage For="@(() => Account.Description)"/>
                             </RadzenColumn>
 
                             <RadzenColumn>

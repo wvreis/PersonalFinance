@@ -2,6 +2,7 @@
 @using PersonalFinance.Helpers;
 @using PersonalFinance.Helpers.Routes;
 @using PersonalFinance.Models;
+@using System.Linq.Expressions;
 @attribute [
     Route(AccountsRoutes.Index)
 ]
@@ -28,16 +29,47 @@ else {
         LogicalFilterOperator="LogicalFilterOperator.Or">
         
         <Columns>
-            <RadzenDataGridColumn TItem="Account" Property="Account.Id" Title="#" Frozen="true" Width="80px" TextAlign="TextAlign.Center" CssClass=“font-weight-bold” />
-            <RadzenDataGridColumn TItem="Account" Property="Account.Name" Title="Nome" Frozen="true" Width="160px" />
-            <RadzenDataGridColumn TItem="Account" Property="Account.Bank.Number" Title="Nº Banco" Width="80px"/>
-            <RadzenDataGridColumn TItem="Account" Property="Account.Bank.Name" Title="Banco" Width="160px" />
-            <RadzenDataGridColumn TItem="Account" Property="" Title="" Width="160px" TextAlign="TextAlign.End">
+            <RadzenDataGridColumn 
+                TItem="Account"
+                Property="@(ObjectHelper.GetFullName<Account, int>(x => x.Id))"
+                Title="#" 
+                Frozen="true" 
+                Width="80px" 
+                TextAlign="TextAlign.Center" 
+                CssClass=“font-weight-bold” />
+            
+            <RadzenDataGridColumn 
+                TItem="Account"
+                Property="@(ObjectHelper.GetFullName<Account, string>(x => x.Description))"
+                Title="Descrição" 
+                Frozen="true" 
+                Width="160px" />
+            
+            <RadzenDataGridColumn 
+                TItem="Account" 
+                Property="@(ObjectHelper.GetFullName<Account, int>(x => x.Bank.Id))" 
+                Title="Nº Banco"
+                Width="80px"/>
+            
+            <RadzenDataGridColumn 
+                TItem="Account"
+                Property="@(ObjectHelper.GetFullName<Account, string>(x => x.Bank.Name))"
+                Title="Banco" 
+                Width="160px" />
+            
+            <RadzenDataGridColumn 
+                TItem="Account" 
+                Property="" 
+                Title="" 
+                Width="160px" 
+                TextAlign="TextAlign.End">
+
                 <Template Context="account">
                     <a href="@AccountsRoutes.GoToEdition(account.Id)">
                         <RadzenButton Text="Editar"/>
                     </a>
                 </Template>
+
             </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
@@ -57,5 +89,9 @@ else {
 
     #region VALIDATIONS
     bool Loading => Accounts is null;
+    #endregion
+
+    #region AUXILIARY
+    
     #endregion
 }

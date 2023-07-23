@@ -1,10 +1,11 @@
 ﻿using PersonalFinance.Models;
 
-namespace PersonalFinance.Data; 
-public static class MainBanks {    
-    public static List<Bank> GetBanks()
+namespace PersonalFinance.Data.AutoRegisterLists;
+public class Banks
+{
+    public static List<Bank> All
     {
-        return new List<Bank>
+        get => new()
         {
             new Bank { Name = "Stone Pagamentos", Number = 197 },
             new Bank { Name = "Banco Cooperativo Sicredi S.A.", Number = 748 },

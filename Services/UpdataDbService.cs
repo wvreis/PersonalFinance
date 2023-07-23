@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PersonalFinance.Data;
+using PersonalFinance.Data.AutoRegisterLists;
 
 namespace PersonalFinance.Services;
 public class UpdataDbService : ControllerBase, IHostedService {
@@ -24,6 +25,7 @@ public class UpdataDbService : ControllerBase, IHostedService {
         try {
             UpdateDatabase();
             await AddBanks();
+            await AddAcocuntTypes();
         }
         catch (Exception ex) {
 
@@ -44,10 +46,24 @@ public class UpdataDbService : ControllerBase, IHostedService {
         using (var scope = _scopeFactory.CreateScope()) {
             var _context = scope.ServiceProvider.GetRequiredService<AppDb>();
 
-            var cadastrados = _context.Banks.ToList();
+            var alreadyRegistered = _context.Banks.ToList();
 
-            if (!cadastrados.Any()) {
-                await _context.Banks.AddRangeAsync(MainBanks.GetBanks());
+            if (!alreadyRegistered.Any()) {
+                await _context.Banks.AddRangeAsync(Banks.All);
+                await _context.SaveChangesAsync();
+            }
+        }
+    }
+
+    async Task AddAcocuntTypes()
+    {
+        using (var scope = _scopeFactory.CreateScope()) {
+            var _context = scope.ServiceProvider.GetRequiredService<AppDb>();
+
+            var alreadyRegistered = _context.AccountTypes.ToList();
+
+            if (!alreadyRegistered.Any()) {
+                await _context.AccountTypes.AddRangeAsync(AccountTypes.All);  
                 await _context.SaveChangesAsync();
             }
         }

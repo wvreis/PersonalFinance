@@ -7,7 +7,7 @@ public class Account {
     public int Id { get; set; }
 
     [Required(ErrorMessage = "A Descrição precisa ser informada.")]
-    public string Name { get; set; }
+    public string Description { get; set; }
 
     public double OpeningBalance { get; set; }
 

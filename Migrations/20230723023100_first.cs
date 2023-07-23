@@ -177,7 +177,7 @@ namespace PersonalFinance.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
                     OpeningBalance = table.Column<double>(type: "double precision", nullable: false),
                     BankId = table.Column<int>(type: "integer", nullable: false)
                 },

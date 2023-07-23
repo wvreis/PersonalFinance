@@ -12,8 +12,8 @@ using PersonalFinance.Data;
 namespace PersonalFinance.Migrations
 {
     [DbContext(typeof(AppDb))]
-    [Migration("20230722200106_first")]
-    partial class first
+    [Migration("20230723023232_accountTypes")]
+    partial class accountTypes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -236,7 +236,7 @@ namespace PersonalFinance.Migrations
                     b.Property<int>("BankId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -248,6 +248,23 @@ namespace PersonalFinance.Migrations
                     b.HasIndex("BankId");
 
                     b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("PersonalFinance.Models.AccountType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AccountTypes");
                 });
 
             modelBuilder.Entity("PersonalFinance.Models.Bank", b =>

@@ -16,5 +16,6 @@ public class AppDb : IdentityDbContext {
 
     public DbSet<Bank> Banks { get; set; }
     public DbSet<Account> Accounts { get; set; }
+    public DbSet<AccountType> AccountTypes { get; set; }
 }
 
