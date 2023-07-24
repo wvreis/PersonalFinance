@@ -49,7 +49,7 @@ public class UpdataDbService : ControllerBase, IHostedService {
             var alreadyRegistered = _context.Banks.ToList();
 
             if (!alreadyRegistered.Any()) {
-                await _context.Banks.AddRangeAsync(Banks.All);
+                await _context.Banks.AddRangeAsync(Banks.GetAll());
                 await _context.SaveChangesAsync();
             }
         }
@@ -63,7 +63,7 @@ public class UpdataDbService : ControllerBase, IHostedService {
             var alreadyRegistered = _context.AccountTypes.ToList();
 
             if (!alreadyRegistered.Any()) {
-                await _context.AccountTypes.AddRangeAsync(AccountTypes.All);  
+                await _context.AccountTypes.AddRangeAsync(AccountTypes.GetAll());  
                 await _context.SaveChangesAsync();
             }
         }

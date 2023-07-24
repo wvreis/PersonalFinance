@@ -3,9 +3,9 @@
 namespace PersonalFinance.Data.AutoRegisterLists;
 public class AccountTypes
 {
-    public static List<AccountType> All
+    public static List<AccountType> GetAll()
     {
-        get => new() {
+        return new() {
             new AccountType { Description = "Carteira" },
             new AccountType { Description = "Conta Corrente" },
             new AccountType { Description = "Poupança" },

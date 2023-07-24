@@ -26,7 +26,8 @@ else {
         Data="@Accounts" 
         TItem="Account" 
         ColumnWidth="300px" 
-        LogicalFilterOperator="LogicalFilterOperator.Or">
+        LogicalFilterOperator="LogicalFilterOperator.Or"
+        EmptyText="Não há registros a serem listados.">
         
         <Columns>
             <RadzenDataGridColumn 
@@ -74,10 +75,6 @@ else {
         </Columns>
     </RadzenDataGrid>
 }
-
-<style>
-
-</style>
 
 @code{
     List<Account> Accounts { get; set; } = new();

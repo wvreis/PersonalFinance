@@ -78,6 +78,13 @@ else {
                                 <ValidationMessage For="@(() => Account.AccountTypeId)" />
                             </RadzenColumn>
 
+                            @if (!IsNew) {
+                            }
+                            <RadzenColumn>
+                                <RadzenLabel Text="@Account.Status.GetActiveInactive()" Style="width: 100%" />
+                                <RadzenSwitch @bind-Value="@Account.Status" Disabled="@(IsNew)"/>
+                            </RadzenColumn>
+
                         </RadzenRow>
                     </RadzenFieldset>
                 </RadzenStack>
@@ -138,6 +145,8 @@ else {
         try {
             Account.Bank = null;
 
+            throw new Exception("testes de erro");
+
             var result = IsNew ? await Addition() : await Edition();
 
             if (!result.IsSuccessStatusCode)
@@ -147,7 +156,7 @@ else {
         }
         catch (Exception ex) {
 
-            throw ex;
+            await DialogService.Alert(ex.InnerException?.Message ?? ex.Message, "Erro");
         }
     }
 
@@ -188,7 +197,7 @@ else {
         }
         catch (Exception ex) {
 
-            throw ex;
+            await DialogService.Alert(ex.InnerException?.Message ?? ex.Message);
         }
     }
 

@@ -128,6 +128,10 @@ public class AccountsController : ControllerBase {
             if (_context.Accounts == null) {
                 return Problem("Entity set 'AppDb.Accounts'  is null.");
             }
+
+            if (!account.Status)
+                return BadRequest("The provided data is not valid or has a malformed structure.");
+
             _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
 

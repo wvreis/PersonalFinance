@@ -3,9 +3,9 @@
 namespace PersonalFinance.Data.AutoRegisterLists;
 public class Banks
 {
-    public static List<Bank> All
+    public static List<Bank> GetAll()
     {
-        get => new()
+        return new()
         {
             new Bank { Name = "Stone Pagamentos", Number = 197 },
             new Bank { Name = "Banco Cooperativo Sicredi S.A.", Number = 748 },

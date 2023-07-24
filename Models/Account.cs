@@ -3,8 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PersonalFinance.Models; 
 
-public enum AccountStatus { Active, Inactive }
-
 public class Account {    
     [Key]
     public int Id { get; set; }
@@ -15,7 +13,7 @@ public class Account {
 
     public double OpeningBalance { get; set; }
 
-    public AccountStatus Status { get; set; }
+    public bool Status { get; set; } = true;
 
     #region FK
     [ForeignKey(nameof(BankId))]
