@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PersonalFinance.Areas.Identity;
 using PersonalFinance.Data;
 using PersonalFinance.Helpers;
@@ -26,6 +27,11 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 builder.Services.AddHttpClient<HttpClient>();
 builder.Services.AddScoped<HttpContextAccessor>();
 builder.Services.AddScoped<DialogService>();
+
+builder.Services.AddControllersWithViews().AddNewtonsoftJson(options => {
+    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+});
 
 builder.Services.AddControllers().ConfigureApiBehaviorOptions(options => {
     options.InvalidModelStateResponseFactory = context => {

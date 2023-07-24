@@ -2,8 +2,6 @@
 
 namespace PersonalFinance.Models; 
 
-public enum AccountTypeStatus { Active, Inactive }
-
 public class AccountType {
     [Key]
     public int Id { get; set; }
@@ -12,5 +10,9 @@ public class AccountType {
     [StringLength(100)]
     public string Description { get; set; }
 
-    public AccountTypeStatus Status { get; set; }
+    public bool Status { get; set; }
+
+    #region LISTS
+    public List<Account>? Accounts { get; set; }
+    #endregion
 }

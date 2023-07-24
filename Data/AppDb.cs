@@ -12,6 +12,34 @@ public class AppDb : IdentityDbContext {
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        #region BANK
+        builder.Entity<Bank>()
+            .HasMany(x => x.Accounts)
+            .WithOne(x => x.Bank)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
+
+        #region ACCOUNTTYPES
+        builder.Entity<AccountType>()
+            .HasMany(x => x.Accounts)
+            .WithOne(x => x.AccountType) 
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
+
+        #region ACCOUNTS
+        builder.Entity<Account>()
+            .HasMany(x => x.Transactions)
+            .WithOne(x => x.Account)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
+
+        #region TRANSACTIONTYPES
+        builder.Entity<TransactionType>()
+            .HasMany(x => x.Transactions)
+            .WithOne(x => x.TransactionType)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
     }
 
     public DbSet<Bank> Banks { get; set; }

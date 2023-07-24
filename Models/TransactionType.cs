@@ -9,4 +9,8 @@ public class TransactionType {
     [Required]
     [StringLength(100)]
     public string Description { get; set; }
+
+    #region LISTS
+    public List<Transaction>? Transactions { get; set; }
+    #endregion
 }

@@ -24,5 +24,11 @@ public class Transaction {
     [ForeignKey(nameof(AccountId))]
     [Range(1, int.MaxValue, ErrorMessage = "Uma Conta deve ser informada.")]
     public int AccountId { get; set; }
+    public Account? Account { get; set; }
+
+    [ForeignKey(nameof(TransactionTypeId))]
+    [Range(1, int.MaxValue, ErrorMessage = "")]
+    public int TransactionTypeId { get; set; }
+    public TransactionType? TransactionType { get; set; }
     #endregion
 }

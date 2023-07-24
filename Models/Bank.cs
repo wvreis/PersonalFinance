@@ -11,6 +11,10 @@ public class Bank {
     [Range(1, int.MaxValue)]
     public int Number { get; set; }
 
+    #region LISTS
+    public List<Account>? Accounts { get; set; }
+    #endregion
+
     public Bank()
     {
             

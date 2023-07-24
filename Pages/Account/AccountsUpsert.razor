@@ -134,18 +134,23 @@ else {
 
     protected override async Task OnInitializedAsync()
     {
-        Banks = await AccountsAPI.GetBanks();
-        AccountTypes = await AccountsAPI.GerAccountTypes();
+        try {
+            Banks = await AccountsAPI.GetBanks();
+            AccountTypes = await AccountsAPI.GerAccountTypes();
 
-        Account =  IsNew ?  new() :await AccountsAPI.Get(Id);
+            Account =  IsNew ?  new() : await AccountsAPI.Get(Id);
+
+        }
+        catch (Exception ex) {
+
+            await DialogService.Alert(ex.InnerException?.Message ?? ex.Message);
+        }
     }
 
     async Task Confirm()
     {
         try {
             Account.Bank = null;
-
-            throw new Exception("testes de erro");
 
             var result = IsNew ? await Addition() : await Edition();
 

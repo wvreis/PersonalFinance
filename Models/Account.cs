@@ -27,6 +27,10 @@ public class Account {
     public AccountType? AccountType { get; set; }
     #endregion
 
+    #region LISTS
+    public List<Transaction>? Transactions { get; set; }
+    #endregion
+
     public Account()
     {
     }
