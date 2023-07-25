@@ -16,10 +16,11 @@ public class AccountsController : ControllerBase {
     {
         _context = context;
     }
-    #region Get
+
+    #region GET
     [Route($"{nameof(GetAccounts)}")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Account>>> GetAccounts(string searchInfo = null)
+    public async Task<ActionResult<IEnumerable<Account>>> GetAccounts(string? searchInfo = null)
     {
         try {
             if (_context.Accounts == null) {
@@ -28,9 +29,11 @@ public class AccountsController : ControllerBase {
 
             searchInfo = API.UnprocessString(searchInfo);
 
-            return await _context.Accounts
+            var result = await _context.Accounts
                 .Include(x => x.Bank)
                 .ToListAsync();
+
+            return Ok(result);
         }
         catch (Exception ex) {
 
@@ -52,7 +55,7 @@ public class AccountsController : ControllerBase {
                 return NotFound();
             }
 
-            return account;
+            return Ok(account);
         }
         catch (Exception ex) {
 
@@ -95,6 +98,7 @@ public class AccountsController : ControllerBase {
     }
     #endregion
 
+    #region PUT
     [Route($"{nameof(PutAccount)}/{{id}}")]
     [HttpPut]
     public async Task<IActionResult> PutAccount(int id, Account account)
@@ -108,18 +112,23 @@ public class AccountsController : ControllerBase {
             
             await _context.SaveChangesAsync();
         }
-        catch (DbUpdateConcurrencyException) {
+        catch (DbUpdateConcurrencyException ex) {
             if (!AccountExists(id)) {
                 return NotFound();
             }
             else {
-                throw;
+                return BadRequest(ex.Message);
             }
+        }
+        catch (Exception ex) {
+            return BadRequest(ex.Message);
         }
 
         return NoContent();
     }
+    #endregion
 
+    #region POST
     [Route(nameof(PostAccount))]
     [HttpPost]
     public async Task<ActionResult<Account>> PostAccount(Account account)
@@ -142,7 +151,9 @@ public class AccountsController : ControllerBase {
             return BadRequest(ex.Message);
         }
     }
+    #endregion
 
+    #region DELETE
     [Route($"{nameof(DeleteAccount)}/{{id}}")]
     [HttpDelete]
     public async Task<IActionResult> DeleteAccount(int id)
@@ -160,6 +171,7 @@ public class AccountsController : ControllerBase {
 
         return NoContent();
     }
+    #endregion
 
     private bool AccountExists(int id)
     {

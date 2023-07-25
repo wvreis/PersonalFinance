@@ -9,5 +9,6 @@ public class General : ComponentBase {
 
     #region APIs
     [Inject] public AccountsAPI AccountsAPI { get; set; }
+    [Inject] public TransactionsAPI TransactionsAPI { get; set; }
     #endregion
 }
