@@ -1,4 +1,5 @@
-﻿using PersonalFinance.Controllers;
+﻿using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using PersonalFinance.Controllers;
 using PersonalFinance.Helpers.Routes;
 using PersonalFinance.Models;
 
@@ -20,8 +21,11 @@ public class TransactionsAPI {
     public async Task<List<Bank>> GetBanks() =>
         await _http.GetFromJsonAsync<List<Bank>>(ApiRoute.GetBanks());
 
-    public async Task<List<AccountType>> GerAccountTypes() =>
-        await _http.GetFromJsonAsync<List<AccountType>>(ApiRoute.GetAccountTypes());
+    public async Task<List<Account>> GerAccounts() =>
+        await _http.GetFromJsonAsync<List<Account>>(ApiRoute.GetAccounts());
+
+    public async Task<List<TransactionType>> GerAccountTypes() =>
+        await _http.GetFromJsonAsync<List<TransactionType>>(ApiRoute.GetTransactionTypeTypes());
     #endregion
 
     #region POST
@@ -41,7 +45,7 @@ public class TransactionsAPI {
 
     public static class ApiRoute
     {
-        public const string URL = $"api{AccountsRoutes.Index}";
+        public const string URL = $"api/{TransactionsRoutes.Index}";
 
         #region GET
         public static string Get(int id) =>
@@ -54,8 +58,11 @@ public class TransactionsAPI {
         public static string GetBanks() =>
             $"./{URL}/{nameof(TransactionsController.GetBanks)}";
 
-        public static string GetAccountTypes() =>
-            $"./{URL}/{nameof(TransactionsController.GetAccountTypes)}";
+        public static string GetAccounts() =>
+            $"./{URL}/{nameof(TransactionsController.GetAccounts)}";
+
+        public static string GetTransactionTypeTypes() =>
+            $"./{URL}/{nameof(TransactionsController.GetTransactionTypes)}";
         #endregion
 
         #region POST

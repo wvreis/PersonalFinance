@@ -1,5 +1,46 @@
-﻿<h3>TransactionUpsert</h3>
+﻿@using PersonalFinance.Helpers.APIs;
+@using PersonalFinance.Helpers.Routes;
+@using PersonalFinance.Helpers;
+@using PersonalFinance.Models;
+@attribute [
+    Route(TransactionsRoutes.Addition),
+    Route(TransactionsRoutes.Edition)
+]
+@inherits General
+
+@if (Loading) {
+    <p>Carregando...</p>
+}
+else {
+    @Transaction
+}
 
 @code {
+    [Parameter] public int Id { get; set; }
+    Transaction Transaction { get; set; }
 
+    List<Account> Accounts;
+    List<TransactionType> TransactionTypes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try {
+            Accounts = await TransactionsAPI.GerAccounts();
+            TransactionTypes = await TransactionsAPI.GerAccountTypes();
+            Transaction = IsNew ? new() : await TransactionsAPI.Get(Id);
+        }
+        catch (Exception ex) {
+
+            await DialogService.Alert(ex.InnerException?.Message ?? ex.Message);
+        }
+    }
+
+    #region VALIDATIONS
+    bool Loading =>
+        Transaction is null ||
+        Accounts is null ||
+        TransactionTypes is null;
+
+    bool IsNew => Id == 0;
+    #endregion
 }

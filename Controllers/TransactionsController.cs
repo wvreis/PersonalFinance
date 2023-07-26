@@ -70,7 +70,7 @@ public class TransactionsController : ControllerBase {
     public async Task<ActionResult<IEnumerable<Bank>>> GetBanks()
     {
         try {
-            if (_context.Accounts == null) {
+            if (_context.Banks == null) {
                 return NotFound();
             }
 
@@ -82,16 +82,33 @@ public class TransactionsController : ControllerBase {
         }
     }
 
-    [Route($"{nameof(GetAccountTypes)}")]
+    [Route($"{nameof(GetAccounts)}")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AccountType>>> GetAccountTypes()
+    public async Task<ActionResult<IEnumerable<Account>>> GetAccounts()
     {
         try {
-            if (_context.AccountTypes == null) {
+            if (_context.Accounts == null) {
                 return NotFound();
             }
 
-            return await _context.AccountTypes.ToListAsync();
+            return await _context.Accounts.ToListAsync();
+        }
+        catch (Exception ex) {
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Route($"{nameof(GetTransactionTypes)}")]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<TransactionType>>> GetTransactionTypes()
+    {
+        try {
+            if (_context.TransactionTypes == null) {
+                return NotFound();
+            }
+
+            return await _context.TransactionTypes.ToListAsync();
         }
         catch (Exception ex) {
 

@@ -137,9 +137,7 @@ else {
         try {
             Banks = await AccountsAPI.GetBanks();
             AccountTypes = await AccountsAPI.GerAccountTypes();
-
             Account =  IsNew ?  new() : await AccountsAPI.Get(Id);
-
         }
         catch (Exception ex) {
 
@@ -214,7 +212,11 @@ else {
     #endregion
 
     #region VALIDATIONS
-    bool Loading => Account is null;
+    bool Loading => 
+        Account is null ||
+        Banks is null ||
+        AccountTypes is null;
+
     bool IsNew => Id == 0;
     #endregion
 }

@@ -81,7 +81,14 @@ else {
 
     protected override async Task OnInitializedAsync()
     {
-        Transactions = await TransactionsAPI.GetSearch();
+        try {
+            Transactions = await TransactionsAPI.GetSearch();
+
+        }
+        catch (Exception ex) {
+
+            await DialogService.Alert(ex.InnerException?.Message ?? ex.Message);
+        }
     }
 
     #region VALIDATION

@@ -41,7 +41,7 @@ public class AccountsAPI {
 
     public static class ApiRoute
     {
-        public const string URL = $"api{AccountsRoutes.Index}";
+        public const string URL = $"api/{AccountsRoutes.Index}";
 
         #region GET
         public static string Get(int id) =>
