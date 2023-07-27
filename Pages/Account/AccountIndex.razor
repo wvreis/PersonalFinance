@@ -9,7 +9,9 @@
 @inherits General
 
 @if (Loading) {
-    <p>Carregando...</p>
+    <div class="rz-m-12">
+        <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+    </div>
 }
 else {
     <header>Minhas Contas</header>
@@ -77,17 +79,16 @@ else {
 }
 
 @code{
-    List<Account> Accounts { get; set; } = new();
+    List<Account> Accounts { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         try {
             Accounts = await AccountsAPI.GetSearch();
-
         }
         catch (Exception ex) {
 
-            await DialogService.Alert(ex.InnerException?.Message ?? ex.Message);
+            await ErrorMsg(ex);
         }
     }
 

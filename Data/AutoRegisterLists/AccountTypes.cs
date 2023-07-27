@@ -1,8 +1,7 @@
 ﻿using PersonalFinance.Models;
 
 namespace PersonalFinance.Data.AutoRegisterLists;
-public class AccountTypes
-{
+public class AccountTypes {
     public static List<AccountType> GetAll()
     {
         return new() {

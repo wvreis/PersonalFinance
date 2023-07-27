@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PersonalFinance.Data;
@@ -11,9 +12,11 @@ using PersonalFinance.Data;
 namespace PersonalFinance.Migrations
 {
     [DbContext(typeof(AppDb))]
-    partial class AppDbModelSnapshot : ModelSnapshot
+    [Migration("20230727191442_TransactionTypeGroups")]
+    partial class TransactionTypeGroups
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -312,7 +315,7 @@ namespace PersonalFinance.Migrations
                         .HasColumnType("double precision");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -466,9 +469,9 @@ namespace PersonalFinance.Migrations
             modelBuilder.Entity("PersonalFinance.Models.TransactionType", b =>
                 {
                     b.HasOne("PersonalFinance.Models.TransactionTypeGroup", "TransactionTypeGroup")
-                        .WithMany("TransactionTypes")
+                        .WithMany()
                         .HasForeignKey("TransactionTypeGroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("TransactionTypeGroup");
@@ -492,11 +495,6 @@ namespace PersonalFinance.Migrations
             modelBuilder.Entity("PersonalFinance.Models.TransactionType", b =>
                 {
                     b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("PersonalFinance.Models.TransactionTypeGroup", b =>
-                {
-                    b.Navigation("TransactionTypes");
                 });
 #pragma warning restore 612, 618
         }

@@ -27,8 +27,20 @@ public class Transaction {
     public Account? Account { get; set; }
 
     [ForeignKey(nameof(TransactionTypeId))]
-    [Range(1, int.MaxValue, ErrorMessage = "")]
+    [Range(1, int.MaxValue, ErrorMessage = "Um Tipo de Movimentação deve ser informado.")]
     public int TransactionTypeId { get; set; }
     public TransactionType? TransactionType { get; set; }
     #endregion
+
+    public Dictionary<TransactionStatus, string> StatusDictionary =>
+        new() {
+            {TransactionStatus.Pending, "Pendente" },
+            {TransactionStatus.Completed, "Paga" },
+            {TransactionStatus.Canceled, "Cancelada" }
+        };
+
+    public Transaction()
+    {
+        Date = DateTime.Now;
+    }
 }

@@ -7,6 +7,8 @@ public class AppDb : IdentityDbContext {
     public AppDb(DbContextOptions<AppDb> options)
         : base(options)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -40,6 +42,13 @@ public class AppDb : IdentityDbContext {
             .WithOne(x => x.TransactionType)
             .OnDelete(DeleteBehavior.Restrict);
         #endregion
+
+        #region TRANSACTIONTYPEGROUPS
+        builder.Entity<TransactionTypeGroup>()
+            .HasMany(x => x.TransactionTypes)
+            .WithOne(x => x.TransactionTypeGroup) 
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
     }
 
     public DbSet<Bank> Banks { get; set; }
@@ -47,5 +56,6 @@ public class AppDb : IdentityDbContext {
     public DbSet<AccountType> AccountTypes { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<TransactionType> TransactionTypes { get; set; }
+    public DbSet<TransactionTypeGroup> TransactionTypeGroups { get; set; }
 }
 

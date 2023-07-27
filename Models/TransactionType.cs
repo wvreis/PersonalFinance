@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PersonalFinance.Models;
 
@@ -9,6 +10,12 @@ public class TransactionType {
     [Required]
     [StringLength(100)]
     public string Description { get; set; }
+
+    #region FK
+    [ForeignKey(nameof(TransactionTypeGroupId))]
+    public int TransactionTypeGroupId { get; set; }
+    public TransactionTypeGroup? TransactionTypeGroup { get; set; }
+    #endregion
 
     #region LISTS
     public List<Transaction>? Transactions { get; set; }

@@ -21,10 +21,10 @@ public class TransactionsAPI {
     public async Task<List<Bank>> GetBanks() =>
         await _http.GetFromJsonAsync<List<Bank>>(ApiRoute.GetBanks());
 
-    public async Task<List<Account>> GerAccounts() =>
+    public async Task<List<Account>> GetAccounts() =>
         await _http.GetFromJsonAsync<List<Account>>(ApiRoute.GetAccounts());
 
-    public async Task<List<TransactionType>> GerAccountTypes() =>
+    public async Task<List<TransactionType>> GetAccountTypes() =>
         await _http.GetFromJsonAsync<List<TransactionType>>(ApiRoute.GetTransactionTypeTypes());
     #endregion
 
@@ -36,6 +36,9 @@ public class TransactionsAPI {
     #region PUT
     public async Task<HttpResponseMessage> PutTransaction(int id, Transaction transaction) =>
         await _http.PutAsJsonAsync(ApiRoute.PutTransaction(id), transaction);
+
+    public async Task<HttpResponseMessage> PutCancelTransaction(int id) =>
+        await _http.PutAsync(ApiRoute.PutCancelTransaction(id), null);
     #endregion
 
     #region DELETE
@@ -73,6 +76,9 @@ public class TransactionsAPI {
         #region PUT
         public static string PutTransaction(int id) =>
             $"./{URL}/{nameof(TransactionsController.PutTransaction)}/{id}";
+
+        public static string PutCancelTransaction(int id) =>
+            $"./{URL}/{nameof(TransactionsController.PutCancelTransaction)}/{id}";
         #endregion
 
         #region DELETE

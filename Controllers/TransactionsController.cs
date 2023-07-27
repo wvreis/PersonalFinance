@@ -51,7 +51,7 @@ public class TransactionsController : ControllerBase {
                 return NotFound();
             }
 
-            var transaction = _context.Transactions.FindAsync(id);
+            var transaction = await _context.Transactions.FindAsync(id);
 
             if (transaction == null) {
                 return NotFound();
@@ -91,7 +91,9 @@ public class TransactionsController : ControllerBase {
                 return NotFound();
             }
 
-            return await _context.Accounts.ToListAsync();
+            return await _context.Accounts
+                .Where(acc =>  acc.Status)
+                .ToListAsync();
         }
         catch (Exception ex) {
 
@@ -108,7 +110,11 @@ public class TransactionsController : ControllerBase {
                 return NotFound();
             }
 
-            return await _context.TransactionTypes.ToListAsync();
+            var result = await _context.TransactionTypes
+                .Include(x => x.TransactionTypeGroup)
+                .ToListAsync();
+
+            return result;
         }
         catch (Exception ex) {
 
@@ -145,6 +151,34 @@ public class TransactionsController : ControllerBase {
 
         return NoContent();
     }
+
+    [Route($"{nameof(PutCancelTransaction)}/{{id}}")]
+    [HttpPut]
+    public async Task<IActionResult> PutCancelTransaction(int id)
+    {
+        try {
+            var transaction = await _context.Transactions.FindAsync(id);
+
+            transaction.Status = TransactionStatus.Canceled;
+
+            _context.Entry(transaction).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException ex) {
+            if (!TransactionExists(id)) {
+                return NotFound();
+            }
+            else {
+                return BadRequest(ex.Message);
+            }
+        }
+        catch (Exception ex) {
+            return BadRequest(ex.Message);
+        }
+
+        return NoContent();
+    }
     #endregion
 
     #region POST
@@ -154,7 +188,11 @@ public class TransactionsController : ControllerBase {
     {
         try {
             if (_context.Transactions == null) {
-                return Problem("Entity set 'AppDb.Accounts'  is null.");
+                return Problem("Entity set 'AppDb.Accounts' is null.");
+            }
+
+            if (transaction.Status == TransactionStatus.Canceled) {
+                return BadRequest("The provided data is not valid or has a malformed structure.");
             }
 
             _context.Transactions.Add(transaction);
