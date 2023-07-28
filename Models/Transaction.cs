@@ -32,11 +32,11 @@ public class Transaction {
     public TransactionType? TransactionType { get; set; }
     #endregion
 
-    public Dictionary<TransactionStatus, string> StatusDictionary =>
+    public Dictionary<TransactionStatus, (string text, int style )> StatusDictionary =>
         new() {
-            {TransactionStatus.Pending, "Pendente" },
-            {TransactionStatus.Completed, "Paga" },
-            {TransactionStatus.Canceled, "Cancelada" }
+            {TransactionStatus.Pending, new("Pendente", (int)BadgeStyle.Warning) },
+            {TransactionStatus.Completed, new("Paga", (int)BadgeStyle.Success) },
+            {TransactionStatus.Canceled, new("Cancelada", (int)BadgeStyle.Light) }
         };
 
     public Transaction()

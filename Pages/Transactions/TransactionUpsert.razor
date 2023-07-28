@@ -60,7 +60,7 @@ else {
                                     Data=@ValidStatus.ToList()                                    
                                     Style="width: 100%; max-width: 400px;"
                                     ValueProperty="Key"
-                                    TextProperty="Value" 
+                                    TextProperty="@(ObjectHelper.GetFullName<Dictionary<TransactionStatus, (string text, int style )>, string>(x => x.First().Value.text))" 
                                     Disabled="@Disabled"/>
                             </RadzenColumn>
 
@@ -231,7 +231,7 @@ else {
         NavigationManager.NavigateTo(TransactionsRoutes.GoToIndex());
     }
 
-    Dictionary<TransactionStatus, string> ValidStatus => 
+    Dictionary<TransactionStatus, (string text, int style)> ValidStatus => 
         Transaction.Status != TransactionStatus.Canceled ?
         Transaction.StatusDictionary
             .Where(x => x.Key != TransactionStatus.Canceled)

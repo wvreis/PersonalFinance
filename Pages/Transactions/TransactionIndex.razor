@@ -52,13 +52,39 @@ else {
                 TItem="Transaction" 
                 Property="@(ObjectHelper.GetFullName<Transaction, double>(x => x.Amount))" 
                 Title="Valor"
-                Width="80px"/>
+                Width="120px">
+
+                <Template Context="detail">
+                    @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", detail.Amount)
+                </Template>
+
+            </RadzenDataGridColumn>
             
             <RadzenDataGridColumn 
                 TItem="Transaction"
                 Property="@(ObjectHelper.GetFullName<Transaction, DateOnly>(x => x.Date))"
                 Title="Data" 
                 Width="160px" />
+
+            <RadzenDataGridColumn 
+                TItem="Transaction"
+                Property="@(ObjectHelper.GetFullName<Transaction, string>(x => x.Account.Description))"
+                Title="Conta" 
+                Width="160px" />
+
+            <RadzenDataGridColumn 
+                TItem="Transaction"
+                Property="@(ObjectHelper.GetFullName<Transaction, string>(x => x.Account.Description))"
+                Title="Situação" 
+                Width="160px">
+                
+                <Template Context="transaction">
+                    <RadzenBadge 
+                        BadgeStyle="@((BadgeStyle)transaction.StatusDictionary.First(x => x.Key == transaction.Status).Value.style)"
+                        Text="@(transaction.StatusDictionary.First(x => x.Key == transaction.Status).Value.text)" />
+                </Template>
+            
+            </RadzenDataGridColumn>
             
             <RadzenDataGridColumn 
                 TItem="Transaction" 

@@ -32,6 +32,7 @@ public class TransactionsController : ControllerBase {
 
             var result = _context.Transactions
                 .Include(x => x.TransactionType)
+                .Include(x => x.Account)
                 .ToList();
 
             return Ok(result);
