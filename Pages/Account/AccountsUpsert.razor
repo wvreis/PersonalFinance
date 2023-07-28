@@ -111,7 +111,7 @@ else {
                 Size="ButtonSize.Large" 
                 Icon="arrow_back" 
                 Text="Voltar"
-                Click="@(() => Back())" />
+                Click="Back" />
 
             @if (!IsNew) {
                 <RadzenButton 
@@ -120,7 +120,7 @@ else {
                     Size="ButtonSize.Large"
                     Icon="remove"
                     Text="Excluir"
-                    Click="@(() => Remove())"/>
+                    Click="Remove"/>
             }
         </RadzenStack>
     </RadzenTemplateForm>
@@ -152,7 +152,7 @@ else {
 
             var result = IsNew ? await Addition() : await Edition();
 
-            CheckResult(result);
+            await CheckResult(result);
         }
         catch (Exception ex) {
 
@@ -176,7 +176,7 @@ else {
 
             var result = await AccountsAPI.DeleteAccount(Id);
 
-            CheckResult(result);
+            await CheckResult(result);
         }
         catch (Exception ex) {
 
@@ -202,10 +202,12 @@ else {
     {
         Account.Bank = null;
     }
-    void CheckResult(HttpResponseMessage result)
+    async Task CheckResult(HttpResponseMessage result)
     {
-        if (!result.IsSuccessStatusCode)
-            throw new Exception(result.ReasonPhrase);
+        if (!result.IsSuccessStatusCode) {
+            var exMsg = await result.Content.ReadAsStringAsync();
+            throw new Exception(exMsg);
+        }
 
         NavigationManager.NavigateTo(AccountsRoutes.GoToIndex());
     }

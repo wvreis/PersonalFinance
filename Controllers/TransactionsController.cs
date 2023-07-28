@@ -133,6 +133,10 @@ public class TransactionsController : ControllerBase {
                 return BadRequest();
             }
 
+            if (transaction.Status == TransactionStatus.Canceled) {
+                return BadRequest();
+            }
+
             _context.Entry(transaction).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
@@ -159,9 +163,7 @@ public class TransactionsController : ControllerBase {
         try {
             var transaction = await _context.Transactions.FindAsync(id);
 
-            transaction.Status = TransactionStatus.Canceled;
-
-            _context.Entry(transaction).State = EntityState.Modified;
+            _context.Entry(transaction).Property(x => x.Status).CurrentValue = TransactionStatus.Canceled;
 
             await _context.SaveChangesAsync();
         }

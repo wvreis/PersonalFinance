@@ -4,6 +4,7 @@ using PersonalFinance.Data;
 using PersonalFinance.Helpers.APIs;
 using PersonalFinance.Models;
 using Restap.Helpers;
+using System.Data.Common;
 
 namespace PersonalFinance.Controllers;
 
@@ -37,7 +38,7 @@ public class AccountsController : ControllerBase {
         }
         catch (Exception ex) {
 
-            return BadRequest(ex.Message);
+            return BadRequest(ex.InnerException.Message ?? ex.Message);
         }
     }
 
@@ -59,7 +60,7 @@ public class AccountsController : ControllerBase {
         }
         catch (Exception ex) {
 
-            return BadRequest(ex.Message);
+            return BadRequest(ex.InnerException.Message ?? ex.Message);
         }
     }
 
@@ -76,7 +77,7 @@ public class AccountsController : ControllerBase {
         }
         catch (Exception ex) {
 
-            return BadRequest(ex.Message);
+            return BadRequest(ex.InnerException.Message ?? ex.Message);
         }
     }
 
@@ -93,7 +94,7 @@ public class AccountsController : ControllerBase {
         }
         catch (Exception ex) {
 
-            return BadRequest(ex.Message);
+            return BadRequest(ex.InnerException.Message ?? ex.Message);
         }
     }
     #endregion
@@ -148,7 +149,7 @@ public class AccountsController : ControllerBase {
         }
         catch (Exception ex) {
 
-            return BadRequest(ex.Message);
+            return BadRequest(ex.InnerException.Message ?? ex.Message);
         }
     }
     #endregion
@@ -158,18 +159,28 @@ public class AccountsController : ControllerBase {
     [HttpDelete]
     public async Task<IActionResult> DeleteAccount(int id)
     {
-        if (_context.Accounts == null) {
-            return NotFound();
-        }
-        var account = await _context.Accounts.FindAsync(id);
-        if (account == null) {
-            return NotFound();
-        }
+        try {
+            if (_context.Accounts == null) {
+                return NotFound();
+            }
+            var account = await _context.Accounts.FindAsync(id);
+            if (account == null) {
+                return NotFound();
+            }
 
-        _context.Accounts.Remove(account);
-        await _context.SaveChangesAsync();
+            _context.Accounts.Remove(account);
+            await _context.SaveChangesAsync();
 
-        return NoContent();
+            return NoContent();
+        }
+        catch (Exception ex) when (ex.InnerException.Message.Contains("23503:")) {
+
+            return BadRequest("Não podemos excluir esse registro agora, pois outros dependem dele. Você pode inativá-lo");
+        }
+        catch (Exception ex) {
+
+            return BadRequest(ex.InnerException.Message ?? ex.Message);
+        }
     }
     #endregion
 

@@ -37,7 +37,7 @@ else {
                 Property="@(ObjectHelper.GetFullName<Transaction, int>(x => x.Id))"
                 Title="#" 
                 Frozen="true" 
-                Width="80px" 
+                Width="40px" 
                 TextAlign="TextAlign.Center" 
                 CssClass=“font-weight-bold” />
             
@@ -46,7 +46,7 @@ else {
                 Property="@(ObjectHelper.GetFullName<Transaction, string>(x => x.Description))"
                 Title="Descrição" 
                 Frozen="true" 
-                Width="160px" />
+                Width="250px" />
             
             <RadzenDataGridColumn 
                 TItem="Transaction" 
@@ -56,7 +56,7 @@ else {
             
             <RadzenDataGridColumn 
                 TItem="Transaction"
-                Property="@(ObjectHelper.GetFullName<Transaction, DateTime>(x => x.Date))"
+                Property="@(ObjectHelper.GetFullName<Transaction, DateOnly>(x => x.Date))"
                 Title="Data" 
                 Width="160px" />
             

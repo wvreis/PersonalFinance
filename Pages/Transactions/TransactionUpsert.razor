@@ -31,14 +31,16 @@ else {
                                     TValue="double" 
                                     Format="c" 
                                     @bind-Value=@Transaction.Amount
-                                    Style="width: 100%"/>
+                                    Style="width: 100%"
+                                    Disabled="@Disabled"/>
                             </RadzenColumn>
 
                             <RadzenColumn Size="6">
                                 <RadzenLabel Text="Data" Style="width: 100%" />
                                 <RadzenDatePicker 
                                     DateFormat="dd/MM/yyyy"
-                                    @bind-Value=@Transaction.Date />
+                                    @bind-Value=@Transaction.Date
+                                    Disabled="@Disabled"/>
                             </RadzenColumn>
                         
                             <RadzenColumn Size="12">
@@ -46,7 +48,8 @@ else {
                                 <RadzenTextBox 
                                     @bind-Value="Transaction.Description"
                                     Style="width: 100%;" 
-                                    Name="Name"/>
+                                    Name="Name"
+                                    Disabled="@Disabled"/>
                                 <ValidationMessage For="@(() => Transaction.Description)" />
                             </RadzenColumn>
 
@@ -57,7 +60,8 @@ else {
                                     Data=@ValidStatus.ToList()                                    
                                     Style="width: 100%; max-width: 400px;"
                                     ValueProperty="Key"
-                                    TextProperty="Value" />
+                                    TextProperty="Value" 
+                                    Disabled="@Disabled"/>
                             </RadzenColumn>
 
                             <RadzenColumn Size="12" SizeMD="6">
@@ -72,7 +76,8 @@ else {
                                     TextProperty="@(ObjectHelper.GetFullName<Account, string>(x => x.Description))" 
                                     ValueProperty="Id" 
                                     Name="AccountId"
-                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                    Disabled="@Disabled">
                                 </RadzenDropDown>
                                 <RadzenRequiredValidator Component="AccountId"/>
                                 <ValidationMessage For="@(() => Transaction.AccountId)" />
@@ -90,7 +95,8 @@ else {
                                     TextProperty="@(ObjectHelper.GetFullName<TransactionType, string>(x => x.Description))" 
                                     ValueProperty="Id" 
                                     Name="TransactionTypeId"
-                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                    Disabled="@Disabled">
                                 </RadzenDropDown>
                                 <RadzenRequiredValidator Component="TransactionTypeId"/>
                                 <ValidationMessage For="@(() => Transaction.TransactionTypeId)" />
@@ -108,11 +114,13 @@ else {
             Gap="1rem"
             Class="rz-mt-8 rz-mb-4">
 
-            <RadzenButton 
-                ButtonType="ButtonType.Submit" 
-                Size="ButtonSize.Large" 
-                Icon="save" 
-                Text="Salvar" />
+            @if (!Disabled) {
+                <RadzenButton 
+                    ButtonType="ButtonType.Submit" 
+                    Size="ButtonSize.Large" 
+                    Icon="save" 
+                    Text="Salvar" />
+            }
 
             <RadzenButton 
                 ButtonStyle="ButtonStyle.Light" 
@@ -120,16 +128,16 @@ else {
                 Size="ButtonSize.Large" 
                 Icon="arrow_back" 
                 Text="Voltar"
-                Click="@(() => Back())" />
+                Click="Back" />
 
-            @if (!IsNew) {
+            @if (!IsNew && !Disabled) {
                 <RadzenButton 
                     ButtonStyle="ButtonStyle.Danger"
                     Variant="Variant.Flat"
                     Size="ButtonSize.Large"
                     Icon="remove"
                     Text="Excluir"
-                    Click="@(() => Cancel())"/>
+                    Click="Cancel"/>
             }
         </RadzenStack>
     </RadzenTemplateForm>
@@ -160,7 +168,7 @@ else {
 
             var result = IsNew ? await Addition() : await Edition();
 
-            CheckResult(result);
+            await CheckResult(result);
         }
         catch (Exception ex) {
 
@@ -184,7 +192,7 @@ else {
 
             var result = await TransactionsAPI.PutCancelTransaction(Id);
 
-            CheckResult(result);
+            await CheckResult(result);
         }
         catch (Exception ex) {
 
@@ -213,18 +221,22 @@ else {
         Transaction.TransactionType = null;
     }
 
-    void CheckResult(HttpResponseMessage result)
+    async Task CheckResult(HttpResponseMessage result)
     {
-        if (!result.IsSuccessStatusCode)
-            throw new Exception(result.ReasonPhrase);
+        if (!result.IsSuccessStatusCode) {
+            var exMsg = await result.Content.ReadAsStringAsync();
+            throw new Exception(exMsg);
+        }
 
         NavigationManager.NavigateTo(TransactionsRoutes.GoToIndex());
     }
 
     Dictionary<TransactionStatus, string> ValidStatus => 
+        Transaction.Status != TransactionStatus.Canceled ?
         Transaction.StatusDictionary
             .Where(x => x.Key != TransactionStatus.Canceled)
-            .ToDictionary(x => x.Key, x => x.Value);
+            .ToDictionary(x => x.Key, x => x.Value) :
+        Transaction.StatusDictionary;
     #endregion
 
     #region VALIDATIONS
@@ -237,5 +249,7 @@ else {
 
     IEnumerable<IGrouping<string, TransactionType>> GroupedTransactionTypes =>
         TransactionTypes.GroupBy(x => x.TransactionTypeGroup.Description);
+
+    bool Disabled => Transaction.Status == TransactionStatus.Canceled;
     #endregion
 }

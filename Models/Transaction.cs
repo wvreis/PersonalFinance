@@ -12,8 +12,8 @@ public class Transaction {
     [Range(0.01, double.MaxValue, ErrorMessage = "O Valor deve ser informado.")]
     public double Amount { get; set; }
 
-    [Range(typeof(DateTime), "01/01/2000", "01/01/2500", ErrorMessage = "Uma Data posterior a {0} deve ser informada.")]
-    public DateTime Date { get; set; }
+    [Range(typeof(DateOnly), "01/01/2000", "01/01/2500", ErrorMessage = "Uma Data posterior a {0} deve ser informada.")]
+    public DateOnly Date { get; set; }
 
     [Required(ErrorMessage = "Descrição deve ser informada.")]
     public string Description { get; set; }
@@ -41,6 +41,6 @@ public class Transaction {
 
     public Transaction()
     {
-        Date = DateTime.Now;
+        Date = DateOnly.FromDateTime(DateTime.Now);
     }
 }
