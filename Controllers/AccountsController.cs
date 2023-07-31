@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PersonalFinance.Data;
 using PersonalFinance.Helpers.APIs;
 using PersonalFinance.Models;
+using PersonalFinance.Queries;
 using Restap.Helpers;
 using System.Data.Common;
 
@@ -32,6 +33,7 @@ public class AccountsController : ControllerBase {
 
             var result = await _context.Accounts
                 .Include(x => x.Bank)
+                .SearchAccounts(searchInfo)
                 .ToListAsync();
 
             return Ok(result);
