@@ -10,14 +10,32 @@
 
 @if (Loading) {
     <div class="rz-m-12">
-        <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+        <RadzenProgressBar 
+            Value="100" 
+            ShowValue="false" 
+            Mode="ProgressBarMode.Indeterminate" />
     </div>
 }
 else {
     <header>Minhas Contas</header>
 
+    <RadzenTextBox 
+        Placeholder="Pesquisar por..." 
+        Style="width: 85%" 
+        @bind-Value="@SearchInfo"/>
+
+    <RadzenButton 
+        Icon="search" 
+        Class="rz-mt-8 rz-mb-4" 
+        Click="(() => Search(SearchInfo))"/>
+
+    <RadzenButton 
+        Icon="history" 
+        Class="rz-mt-8 rz-mb-4" 
+        Click="(() => ResetSearch())" />
+
     <a href="@AccountsRoutes.GoToAddition()">
-        <RadzenButton Text="Adicionar" Icon="add" Class="rz-mt-8 rz-mb-4" />
+        <RadzenButton Icon="add" Class="rz-mt-8 rz-mb-4" />
     </a>
 
     <RadzenDataGrid       
@@ -80,11 +98,12 @@ else {
 
 @code{
     List<Account> Accounts { get; set; }
+    string SearchInfo { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         try {
-            Accounts = await AccountsAPI.GetSearch();
+            await Search();
         }
         catch (Exception ex) {
 
@@ -92,11 +111,18 @@ else {
         }
     }
 
+    async Task Search(string searchInfo = null)
+    {
+        Accounts = await AccountsAPI.GetSearch(searchInfo);
+    }
+
+    async Task ResetSearch()
+    {
+        SearchInfo = null;
+        await Search();
+    }
+
     #region VALIDATIONS
     bool Loading => Accounts is null;
-    #endregion
-
-    #region AUXILIARY
-    
     #endregion
 }
