@@ -1,13 +1,7 @@
 ﻿@using PersonalFinance.Helpers.Routes;
 
 
-<RadzenPanelMenu Style="width:auto" >
-    <div class="top-row ps-3 navbar navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="">Financeiro Pessoal</a>
-        </div>
-    </div>
-
+<RadzenPanelMenu Style="width: contain">
     <RadzenPanelMenuItem Text="Home" Icon="home" Path=""></RadzenPanelMenuItem>
     <RadzenPanelMenuItem Text="Conta" Icon="account_balance" Path="@AccountsRoutes.Index"></RadzenPanelMenuItem>
     <RadzenPanelMenuItem Text="Movimentações" Icon="attach_money" Path="@TransactionsRoutes.Index"></RadzenPanelMenuItem>

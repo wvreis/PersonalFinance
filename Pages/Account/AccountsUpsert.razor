@@ -14,7 +14,9 @@
     </div>
 }
 else {
-    <header>@GetHeaderText() Conta</header>
+    <RadzenText TextStyle="TextStyle.DisplayH4" class="rz-m-6">
+        @GetHeaderText() Conta
+    </RadzenText>
 
     <RadzenTemplateForm Data="Account" Submit="@((args) => Confirm())" InvalidSubmit="InvalidConfirmation" TItem="Account">
         <DataAnnotationsValidator />

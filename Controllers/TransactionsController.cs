@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PersonalFinance.Data;
 using PersonalFinance.Helpers.APIs;
 using PersonalFinance.Models;
+using PersonalFinance.Queries;
 using Restap.Helpers;
 using System.Security.Principal;
 
@@ -33,6 +34,7 @@ public class TransactionsController : ControllerBase {
             var result = _context.Transactions
                 .Include(x => x.TransactionType)
                 .Include(x => x.Account)
+                .SearchTransactions(searchInfo)
                 .ToList();
 
             return Ok(result);

@@ -17,83 +17,96 @@
     </div>
 }
 else {
-    <header>Minhas Contas</header>
+    <RadzenText TextStyle="TextStyle.DisplayH4" class="rz-m-6">
+        Minhas Contas
+    </RadzenText>
 
-    <RadzenTextBox 
-        Placeholder="Pesquisar por..." 
-        Style="width: 85%" 
-        @bind-Value="@SearchInfo"/>
+    <RadzenRow Gap="1rem" Class="rz-mt-8 rz-mb-4" Style="width: 100%" JustifyContent="JustifyContent.SpaceEvenly">
+        <RadzenColumn Size="10">
+            <RadzenTextBox 
+                Placeholder="Pesquisar por..."
+                Style="width: 100%"
+                @bind-Value="@SearchInfo"/>                   
+        </RadzenColumn>
 
-    <RadzenButton 
-        Icon="search" 
-        Class="rz-mt-8 rz-mb-4" 
-        Click="(() => Search(SearchInfo))"/>
+        <RadzenColumn>
+            <RadzenButton 
+                Icon="search"
+                Style="width: 100%"
+                Click="(() => Search(SearchInfo))"/>
+        </RadzenColumn>
 
-    <RadzenButton 
-        Icon="history" 
-        Class="rz-mt-8 rz-mb-4" 
-        Click="(() => ResetSearch())" />
+        <RadzenColumn>
+            <RadzenButton 
+                Icon="history"
+                Style="width: 100%"
+                Click="(() => ResetSearch())" />
+        </RadzenColumn>
 
-    <a href="@AccountsRoutes.GoToAddition()">
-        <RadzenButton Icon="add" Class="rz-mt-8 rz-mb-4" />
-    </a>
+        <RadzenColumn>
+            <RadzenButton 
+                Icon="add"
+                Style="width: 100%"
+                Click="NavigateToAddition"/>
+        </RadzenColumn>
+    </RadzenRow>
 
     <RadzenDataGrid       
-        PageSize="25" 
-        AllowPaging="false" 
-        PagerHorizontalAlign="HorizontalAlign.Left" 
-        ShowPagingSummary="false"
-        Data="@Accounts" 
-        TItem="Account" 
-        ColumnWidth="300px" 
-        LogicalFilterOperator="LogicalFilterOperator.Or"
-        EmptyText="Não há registros a serem listados.">
+            PageSize="25" 
+            AllowPaging="false" 
+            PagerHorizontalAlign="HorizontalAlign.Left" 
+            ShowPagingSummary="false"
+            Data="@Accounts" 
+            TItem="Account" 
+            ColumnWidth="300px" 
+            LogicalFilterOperator="LogicalFilterOperator.Or"
+            EmptyText="Não há registros a serem listados.">
         
-        <Columns>
-            <RadzenDataGridColumn 
-                TItem="Account"
-                Property="@(ObjectHelper.GetFullName<Account, int>(x => x.Id))"
-                Title="#" 
-                Frozen="true" 
-                Width="80px" 
-                TextAlign="TextAlign.Center" 
-                CssClass=“font-weight-bold” />
+            <Columns>
+                <RadzenDataGridColumn 
+                    TItem="Account"
+                    Property="@(ObjectHelper.GetFullName<Account, int>(x => x.Id))"
+                    Title="#" 
+                    Frozen="true" 
+                    Width="80px" 
+                    TextAlign="TextAlign.Center" 
+                    CssClass=“font-weight-bold” />
             
-            <RadzenDataGridColumn 
-                TItem="Account"
-                Property="@(ObjectHelper.GetFullName<Account, string>(x => x.Description))"
-                Title="Descrição" 
-                Frozen="true" 
-                Width="160px" />
+                <RadzenDataGridColumn 
+                    TItem="Account"
+                    Property="@(ObjectHelper.GetFullName<Account, string>(x => x.Description))"
+                    Title="Descrição" 
+                    Frozen="true" 
+                    Width="160px" />
             
-            <RadzenDataGridColumn 
-                TItem="Account" 
-                Property="@(ObjectHelper.GetFullName<Account, int>(x => x.Bank.Id))" 
-                Title="Nº Banco"
-                Width="80px"/>
+                <RadzenDataGridColumn 
+                    TItem="Account" 
+                    Property="@(ObjectHelper.GetFullName<Account, int>(x => x.Bank.Id))" 
+                    Title="Nº Banco"
+                    Width="80px"/>
             
-            <RadzenDataGridColumn 
-                TItem="Account"
-                Property="@(ObjectHelper.GetFullName<Account, string>(x => x.Bank.Name))"
-                Title="Banco" 
-                Width="160px" />
+                <RadzenDataGridColumn 
+                    TItem="Account"
+                    Property="@(ObjectHelper.GetFullName<Account, string>(x => x.Bank.Name))"
+                    Title="Banco" 
+                    Width="160px" />
             
-            <RadzenDataGridColumn 
-                TItem="Account" 
-                Property="" 
-                Title="" 
-                Width="160px" 
-                TextAlign="TextAlign.End">
+                <RadzenDataGridColumn 
+                    TItem="Account" 
+                    Property="" 
+                    Title="" 
+                    Width="160px" 
+                    TextAlign="TextAlign.End">
 
-                <Template Context="account">
-                    <a href="@AccountsRoutes.GoToEdition(account.Id)">
-                        <RadzenButton Text="Editar"/>
-                    </a>
-                </Template>
+                    <Template Context="account">
+                        <a href="@AccountsRoutes.GoToEdition(account.Id)">
+                            <RadzenButton Text="Editar"/>
+                        </a>
+                    </Template>
 
-            </RadzenDataGridColumn>
-        </Columns>
-    </RadzenDataGrid>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
 }
 
 @code{
@@ -120,6 +133,11 @@ else {
     {
         SearchInfo = null;
         await Search();
+    }
+
+    void NavigateToAddition()
+    {
+        NavigationManager.NavigateTo(AccountsRoutes.GoToAddition());
     }
 
     #region VALIDATIONS

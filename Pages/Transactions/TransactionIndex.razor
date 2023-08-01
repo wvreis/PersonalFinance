@@ -14,11 +14,39 @@
     </div>
 }
 else {
-    <header>Movimentações</header>
+    <RadzenText TextStyle="TextStyle.DisplayH4" class="rz-m-6">
+        Movimentações
+    </RadzenText>    
 
-    <a href="@TransactionsRoutes.GoToAddition()">
-        <RadzenButton Text="Adicionar" Icon="add" Class="rz-mt-8 rz-mb-4" />
-    </a>
+    <RadzenRow Gap="1rem" Class="rz-mt-8 rz-mb-4" Style="width: 100%" JustifyContent="JustifyContent.SpaceEvenly">
+        <RadzenColumn Size="10">
+            <RadzenTextBox 
+                Placeholder="Pesquisar por..."
+                Style="width: 100%"
+                @bind-Value="@SearchInfo"/>                   
+        </RadzenColumn>
+
+        <RadzenColumn>
+            <RadzenButton 
+                Icon="search"
+                Style="width: 100%"
+                Click="(() => Search(SearchInfo))"/>
+        </RadzenColumn>
+
+        <RadzenColumn>
+            <RadzenButton 
+                Icon="history"
+                Style="width: 100%"
+                Click="(() => ResetSearch())" />
+        </RadzenColumn>
+
+        <RadzenColumn>
+            <RadzenButton 
+                Icon="add"
+                Style="width: 100%"
+                Click="NavigateToAddition"/>
+        </RadzenColumn>
+    </RadzenRow>
 
     <RadzenDataGrid       
         PageSize="25" 
@@ -106,16 +134,33 @@ else {
 
 @code {
     List<Transaction> Transactions { get; set; }
+    string SearchInfo { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         try {
-            Transactions = await TransactionsAPI.GetSearch();
+            await Search();
         }
         catch (Exception ex) {
 
             await ErrorMsg(ex);
         }
+    }
+
+    async Task Search(string searchInfo = null)
+    {
+        Transactions = await TransactionsAPI.GetSearch(searchInfo);
+    }
+
+    async Task ResetSearch()
+    {
+        SearchInfo = null;
+        await Search();
+    }
+
+    void NavigateToAddition()
+    {
+        NavigationManager.NavigateTo(TransactionsRoutes.GoToAddition());
     }
 
     #region VALIDATION

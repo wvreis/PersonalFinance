@@ -14,7 +14,9 @@
     </div>
 }
 else {
-    <header>@GetHeaderText() Movimentação</header>
+    <RadzenText TextStyle="TextStyle.DisplayH4" class="rz-m-6">
+        @GetHeaderText() Movimentação
+    </RadzenText>
 
     <RadzenTemplateForm Data="Transaction" Submit="@((args) => Confirm())" InvalidSubmit="InvalidConfirmation" TItem="Transaction">
         <DataAnnotationsValidator />
