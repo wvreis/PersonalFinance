@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PersonalFinance.Models;
+using System.Reflection.Emit;
 
 namespace PersonalFinance.Data; 
 public class AppDb : IdentityDbContext {
@@ -48,6 +49,16 @@ public class AppDb : IdentityDbContext {
             .HasMany(x => x.TransactionTypes)
             .WithOne(x => x.TransactionTypeGroup) 
             .OnDelete(DeleteBehavior.Restrict);
+        #endregion
+
+        #region TRANSACTIONS
+        builder.Entity<Transaction>()
+            .HasGeneratedTsVectorColumn(
+                p => p.SearchVector,
+                "portuguese",
+                p => new { p.Description })
+            .HasIndex(p => p.SearchVector)
+            .HasMethod("GIN");
         #endregion
     }
 

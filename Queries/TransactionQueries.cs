@@ -1,6 +1,8 @@
 ﻿using Restap.Helpers;
 using System.Linq.Expressions;
 using PersonalFinance.Models;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace PersonalFinance.Queries; 
 public static class TransactionQueries {
@@ -12,6 +14,14 @@ public static class TransactionQueries {
                 transaction.Amount.ToString().ToLower().Contains(searchInfo.ToLower()) :
             true;
 
-        return transactions.Where(Search);
+        Expression<Func<Transaction, bool>> SearchVector = transaction =>
+            transaction.SearchVector.Matches(EF.Functions.PhraseToTsQuery(searchInfo));
+
+        var result = transactions.Where(Search);
+
+        if (!result.Any())
+            result = transactions.Where(SearchVector);
+
+        return result;
     }
 }

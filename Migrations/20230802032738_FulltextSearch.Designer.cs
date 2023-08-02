@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using PersonalFinance.Data;
 namespace PersonalFinance.Migrations
 {
     [DbContext(typeof(AppDb))]
-    partial class AppDbModelSnapshot : ModelSnapshot
+    [Migration("20230802032738_FulltextSearch")]
+    partial class FulltextSearch
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -254,7 +257,7 @@ namespace PersonalFinance.Migrations
 
                     b.HasIndex("BankId");
 
-                    b.ToTable("Accounts", (string)null);
+                    b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("PersonalFinance.Models.AccountType", b =>
@@ -275,7 +278,7 @@ namespace PersonalFinance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccountTypes", (string)null);
+                    b.ToTable("AccountTypes");
                 });
 
             modelBuilder.Entity("PersonalFinance.Models.Bank", b =>
@@ -295,7 +298,7 @@ namespace PersonalFinance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Banks", (string)null);
+                    b.ToTable("Banks");
                 });
 
             modelBuilder.Entity("PersonalFinance.Models.Transaction", b =>
@@ -341,7 +344,7 @@ namespace PersonalFinance.Migrations
 
                     b.HasIndex("TransactionTypeId");
 
-                    b.ToTable("Transactions", (string)null);
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("PersonalFinance.Models.TransactionType", b =>
@@ -364,7 +367,7 @@ namespace PersonalFinance.Migrations
 
                     b.HasIndex("TransactionTypeGroupId");
 
-                    b.ToTable("TransactionTypes", (string)null);
+                    b.ToTable("TransactionTypes");
                 });
 
             modelBuilder.Entity("PersonalFinance.Models.TransactionTypeGroup", b =>
@@ -382,7 +385,7 @@ namespace PersonalFinance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionTypeGroups", (string)null);
+                    b.ToTable("TransactionTypeGroups");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

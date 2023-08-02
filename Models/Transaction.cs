@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using NpgsqlTypes;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PersonalFinance.Models; 
@@ -19,6 +20,8 @@ public class Transaction {
     public string Description { get; set; }
 
     public TransactionStatus Status { get; set; }
+
+    public NpgsqlTsVector? SearchVector { get; }
 
     #region FK
     [ForeignKey(nameof(AccountId))]
