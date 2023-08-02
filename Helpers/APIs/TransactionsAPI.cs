@@ -2,6 +2,7 @@
 using PersonalFinance.Controllers;
 using PersonalFinance.Helpers.Routes;
 using PersonalFinance.Models;
+using PersonalFinance.RequestModels;
 
 namespace PersonalFinance.Helpers.APIs; 
 public class TransactionsAPI {
@@ -15,8 +16,8 @@ public class TransactionsAPI {
     public async Task<Transaction> Get(int id) =>
         await _http.GetFromJsonAsync<Transaction>(ApiRoute.Get(id));
 
-    public async Task<List<Transaction>> GetSearch(string searchInfo = null) =>
-        await _http.GetFromJsonAsync<List<Transaction>>(ApiRoute.GetSearch(searchInfo));
+    public async Task<List<Transaction>> GetSearch(TransactionSearchModel? searchModel = null) =>
+        await _http.GetFromJsonAsync<List<Transaction>>(ApiRoute.GetSearch(searchModel));
 
     public async Task<List<Bank>> GetBanks() =>
         await _http.GetFromJsonAsync<List<Bank>>(ApiRoute.GetBanks());
@@ -54,9 +55,9 @@ public class TransactionsAPI {
         public static string Get(int id) =>
             $"./{URL}/{nameof(TransactionsController.GetTransaction)}/{id}";
 
-        public static string GetSearch(string searchInfo) =>
-            $"./{URL}/{nameof(TransactionsController.GetTransactions)}?" +
-            $"{nameof(searchInfo)}={searchInfo}";
+        public static string GetSearch(TransactionSearchModel? searchModel) =>
+            $"./{URL}/{nameof(TransactionsController.GetTransactions)}" +            
+            searchModel.GenerateQueryString();
 
         public static string GetBanks() =>
             $"./{URL}/{nameof(TransactionsController.GetBanks)}";

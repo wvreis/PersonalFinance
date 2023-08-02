@@ -23,4 +23,13 @@ public static class TransactionQueries {
 
         return result;
     }
+
+    public static IQueryable<Transaction> WherePeriod(this IQueryable<Transaction> transactions, DateTime startDate, DateTime endDate)
+    {
+        var result = transactions
+            .Where(t => t.Date.Date >= startDate.Date)
+            .Where(t => t.Date.Date <= endDate.Date);
+
+        return result;
+    }
 }

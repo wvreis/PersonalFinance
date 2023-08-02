@@ -4,9 +4,8 @@ using PersonalFinance.Data;
 using PersonalFinance.Helpers.APIs;
 using PersonalFinance.Models;
 using PersonalFinance.Queries;
+using PersonalFinance.RequestModels;
 using PersonalFinance.Services;
-using Restap.Helpers;
-using System.Security.Principal;
 
 namespace PersonalFinance.Controllers;
 
@@ -25,24 +24,20 @@ public class TransactionsController : ControllerBase {
     #region GET
     [Route($"{nameof(GetTransactions)}")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions(string? searchInfo = null)
+    public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions([FromQuery] TransactionSearchModel searchModel)
     {
         try {
             if (_context.Transactions == null) {
                 return NotFound();
             }
 
-            searchInfo = API.UnprocessString(searchInfo);
-
-            var searchVectorInfo = _spellCheckerService.SymSpell
-                .LookupCompound(searchInfo)
-                .Select(x => x.term)
-                .Single();
+            string searchVectorInfo = GetSearchVectorString(searchModel.SearchInfo);
 
             var result = _context.Transactions
                 .Include(x => x.TransactionType)
                 .Include(x => x.Account)
-                .SearchTransactions(searchInfo, searchVectorInfo)
+                .WherePeriod(searchModel.StartDate.Value, searchModel.EndDate.Value)
+                .SearchTransactions(searchModel.SearchInfo, searchVectorInfo)
                 .ToList();
 
             return Ok(result);
@@ -51,6 +46,14 @@ public class TransactionsController : ControllerBase {
 
             return BadRequest(ex.Message);
         }
+    }    
+
+    string GetSearchVectorString(string? searchInfo)
+    {
+        return _spellCheckerService.SymSpell
+                .LookupCompound(searchInfo ?? string.Empty)
+                .Select(x => x.term)
+                .Single();
     }
 
     [Route($"{nameof(GetTransaction)}/{{id}}")]
@@ -58,7 +61,7 @@ public class TransactionsController : ControllerBase {
     public async Task<ActionResult<Transaction>> GetTransaction(int id)
     {
         try {
-            if(_context.Transactions == null) {
+            if (_context.Transactions == null) {
                 return NotFound();
             }
 
@@ -103,7 +106,7 @@ public class TransactionsController : ControllerBase {
             }
 
             return await _context.Accounts
-                .Where(acc =>  acc.Status)
+                .Where(acc => acc.Status)
                 .ToListAsync();
         }
         catch (Exception ex) {

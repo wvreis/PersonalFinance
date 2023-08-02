@@ -3,10 +3,13 @@
 @using PersonalFinance.Helpers.Routes;
 @using PersonalFinance.Models;
 @using System.Linq.Expressions;
+@using PersonalFinance.RequestModels;
 @attribute [
     Route(TransactionsRoutes.Index)
 ]
 @inherits General
+
+<PageTitle>Movimentações</PageTitle>
 
 @if (Loading) {
     <div class="rz-m-12">
@@ -18,19 +21,39 @@ else {
         Movimentações
     </RadzenText>    
 
+    <RadzenRow Gap="1rem" Class="rz-mt-8 rz-mb-4" Style="width: 100%" JustifyContent="JustifyContent.Center">
+        <RadzenColumn Size="3">
+            <RadzenLabel Text="De" />
+            <RadzenDatePicker 
+                DateFormat="dd/MM/yyyy"
+                Value=@SearchModel.StartDate
+                TValue="DateTime"
+                Change="@((d) => Search(startDate: d))"/>
+        </RadzenColumn>
+
+        <RadzenColumn Size="3">
+            <RadzenLabel Text="Até" />
+            <RadzenDatePicker 
+                DateFormat="dd/MM/yyyy"
+                Value=@SearchModel.EndDate
+                TValue="DateTime"
+                Change="@((d) => Search(endDate: d))"/>
+        </RadzenColumn>
+    </RadzenRow>
+
     <RadzenRow Gap="1rem" Class="rz-mt-8 rz-mb-4" Style="width: 100%" JustifyContent="JustifyContent.SpaceEvenly">
         <RadzenColumn Size="10">
             <RadzenTextBox 
                 Placeholder="Pesquisar por..."
                 Style="width: 100%"
-                @bind-Value="@SearchInfo"/>                   
+                @bind-Value="@SearchModel.SearchInfo"/>                   
         </RadzenColumn>
 
         <RadzenColumn>
             <RadzenButton 
                 Icon="search"
                 Style="width: 100%"
-                Click="(() => Search(SearchInfo))"/>
+                Click="@(() => Search())"/>
         </RadzenColumn>
 
         <RadzenColumn>
@@ -80,7 +103,7 @@ else {
                 TItem="Transaction" 
                 Property="@(ObjectHelper.GetFullName<Transaction, double>(x => x.Amount))" 
                 Title="Valor"
-                Width="120px">
+                Width="90px">
 
                 <Template Context="detail">
                     @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", detail.Amount)
@@ -90,21 +113,21 @@ else {
             
             <RadzenDataGridColumn 
                 TItem="Transaction"
-                Property="@(ObjectHelper.GetFullName<Transaction, DateOnly>(x => x.Date))"
+                Property="@(ObjectHelper.GetFullName<Transaction, DateTime>(x => x.Date))"
                 Title="Data" 
-                Width="160px" />
+                Width="90px" />
 
             <RadzenDataGridColumn 
                 TItem="Transaction"
                 Property="@(ObjectHelper.GetFullName<Transaction, string>(x => x.Account.Description))"
                 Title="Conta" 
-                Width="160px" />
+                Width="80px" />
 
             <RadzenDataGridColumn 
                 TItem="Transaction"
                 Property="@(ObjectHelper.GetFullName<Transaction, string>(x => x.Account.Description))"
                 Title="Situação" 
-                Width="160px">
+                Width="80px">
                 
                 <Template Context="transaction">
                     <RadzenBadge 
@@ -118,7 +141,7 @@ else {
                 TItem="Transaction" 
                 Property="" 
                 Title="" 
-                Width="160px" 
+                Width="70px" 
                 TextAlign="TextAlign.End">
 
                 <Template Context="transaction">
@@ -134,7 +157,7 @@ else {
 
 @code {
     List<Transaction> Transactions { get; set; }
-    string SearchInfo { get; set; }
+    TransactionSearchModel SearchModel { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -147,14 +170,23 @@ else {
         }
     }
 
-    async Task Search(string searchInfo = null)
+    async Task Search(DateTime? startDate = null, DateTime? endDate = null)
     {
-        Transactions = await TransactionsAPI.GetSearch(searchInfo);
+        if (startDate.HasValue) {
+            SearchModel.StartDate = startDate;
+        }
+
+        if (endDate.HasValue) {
+            SearchModel.EndDate = endDate;
+        }
+
+        Transactions = await TransactionsAPI.GetSearch(SearchModel);
     }
 
     async Task ResetSearch()
     {
-        SearchInfo = null;
+        SearchModel = null;
+        SearchModel = new();
         await Search();
     }
 
