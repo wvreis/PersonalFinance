@@ -4,6 +4,7 @@ using PersonalFinance.Data;
 using PersonalFinance.Helpers.APIs;
 using PersonalFinance.Models;
 using PersonalFinance.Queries;
+using PersonalFinance.Services;
 using Restap.Helpers;
 using System.Security.Principal;
 
@@ -13,10 +14,12 @@ namespace PersonalFinance.Controllers;
 [ApiController]
 public class TransactionsController : ControllerBase {
     private readonly AppDb _context;
+    private readonly SpellCheckerService _spellCheckerService;
 
-    public TransactionsController(AppDb context)
+    public TransactionsController(AppDb context, SpellCheckerService spellCheckerService)
     {
         _context = context;
+        _spellCheckerService = spellCheckerService;
     }
 
     #region GET
@@ -31,10 +34,15 @@ public class TransactionsController : ControllerBase {
 
             searchInfo = API.UnprocessString(searchInfo);
 
+            var searchVectorInfo = _spellCheckerService.SymSpell
+                .LookupCompound(searchInfo)
+                .Select(x => x.term)
+                .Single();
+
             var result = _context.Transactions
                 .Include(x => x.TransactionType)
                 .Include(x => x.Account)
-                .SearchTransactions(searchInfo)
+                .SearchTransactions(searchInfo, searchVectorInfo)
                 .ToList();
 
             return Ok(result);

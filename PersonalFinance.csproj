@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\Dictionaries\pt_br_50k.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.9" />
@@ -27,6 +31,7 @@
     <PackageReference Include="Radzen.Blazor" Version="4.14.1" />
     <PackageReference Include="Restap.Helpers" Version="7.0.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="SymSpell" Version="6.7.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,6 +8,7 @@ using PersonalFinance.Areas.Identity;
 using PersonalFinance.Data;
 using PersonalFinance.Helpers;
 using PersonalFinance.Helpers.APIs;
+using PersonalFinance.Queries;
 using PersonalFinance.Services;
 using System.Net.Mime;
 
@@ -57,6 +58,10 @@ builder.Services.AddScoped<HttpClient>(s => {
 #region APIs
 builder.Services.AddScoped<AccountsAPI>();
 builder.Services.AddScoped<TransactionsAPI>();
+#endregion
+
+#region SERVICES
+builder.Services.AddScoped<SpellCheckerService>();
 #endregion
 
 #region HOSTED SERVICES
