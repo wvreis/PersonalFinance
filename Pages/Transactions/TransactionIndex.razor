@@ -114,8 +114,14 @@ else {
             <RadzenDataGridColumn 
                 TItem="Transaction"
                 Property="@(ObjectHelper.GetFullName<Transaction, DateTime>(x => x.Date))"
-                Title="Data" 
-                Width="90px" />
+                Title="Data"
+                Width="90px" >
+
+                <Template Context="data">
+                    @(data.Date.ToString("dd/MM/yyyy"))
+                </Template>
+
+            </RadzenDataGridColumn>
 
             <RadzenDataGridColumn 
                 TItem="Transaction"
