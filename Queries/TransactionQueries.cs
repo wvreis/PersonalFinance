@@ -32,4 +32,10 @@ public static class TransactionQueries {
 
         return result;
     }
+
+    public static IQueryable<Transaction> WhereStatus(this IQueryable<Transaction> transactions, TransactionStatus? status) 
+    {
+        var result = transactions.Where(t => status.HasValue ? t.Status == status : true);
+        return result;
+    }
 }

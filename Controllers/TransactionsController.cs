@@ -38,6 +38,7 @@ public class TransactionsController : ControllerBase {
                 .Include(x => x.Account)
                 .WherePeriod(searchModel.StartDate.Value, searchModel.EndDate.Value)
                 .SearchTransactions(searchModel.SearchInfo, searchVectorInfo)
+                .WhereStatus(searchModel.Status)
                 .ToList();
 
             return Ok(result);

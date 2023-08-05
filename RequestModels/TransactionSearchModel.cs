@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.Extensions;
+using PersonalFinance.Models;
 using Restap.Helpers;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PersonalFinance.RequestModels; 
 public class TransactionSearchModel {
@@ -20,6 +20,8 @@ public class TransactionSearchModel {
         EndDate = DateTime.Now;
     }
 
+    public TransactionStatus? Status { get; set; }
+
     public string GenerateQueryString()
     {
         var queryBuilder = new QueryBuilder();
@@ -34,6 +36,10 @@ public class TransactionSearchModel {
 
         if (EndDate.HasValue) {
             queryBuilder.Add(nameof(EndDate), EndDate.Value.ToString("yyyy-MM-dd"));
+        }
+
+        if (Status.HasValue) {
+            queryBuilder.Add(nameof(Status), Status.Value.ToString());
         }
 
         return queryBuilder.ToQueryString().ToString();
