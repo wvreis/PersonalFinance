@@ -42,6 +42,10 @@ public class AppDb : IdentityDbContext {
             .HasMany(x => x.Transactions)
             .WithOne(x => x.TransactionType)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<TransactionType>()
+            .Property(x => x.Nature)
+            .HasDefaultValue(TransactionNature.Outbound);
         #endregion
 
         #region TRANSACTIONTYPEGROUPS

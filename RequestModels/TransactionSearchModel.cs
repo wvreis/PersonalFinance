@@ -14,20 +14,21 @@ public class TransactionSearchModel {
 
     public DateTime? EndDate { get; set; }
 
+    public TransactionStatus? Status { get; set; }
+
     public TransactionSearchModel()
     {
-        StartDate = DateTime.Now;
-        EndDate = DateTime.Now;
+        DateTime today = DateTime.Now;
+        StartDate = new DateTime(today.Year, today.Month, 1);
+        EndDate = StartDate.Value.AddMonths(1).AddDays(-1);
     }
-
-    public TransactionStatus? Status { get; set; }
 
     public string GenerateQueryString()
     {
         var queryBuilder = new QueryBuilder();
 
-        if (!string.IsNullOrEmpty(searchInfo)) {
-            queryBuilder.Add(nameof(searchInfo), searchInfo);
+        if (!string.IsNullOrEmpty(SearchInfo)) {
+            queryBuilder.Add(nameof(SearchInfo), SearchInfo);
         }
 
         if (StartDate.HasValue) {

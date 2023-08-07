@@ -17,4 +17,12 @@ public class SpellCheckerService {
 
         SymSpell.LoadDictionary(dictionaryPath, termIndex, countIndex);
     }
+
+    public string GetSpellCheckedSearchVectorString(string? searchInfo)
+    {
+        return SymSpell
+            .LookupCompound(searchInfo ?? string.Empty)
+            .Select(x => x.term)
+            .Single();
+    }
 }    

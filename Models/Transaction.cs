@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace PersonalFinance.Models; 
 
 public enum TransactionStatus { Pending, Completed, Canceled }
+public enum TransactionNature { Inbound, Outbound };
 
 public class Transaction {
     [Key]
@@ -21,6 +22,15 @@ public class Transaction {
 
     public TransactionStatus Status { get; set; }
 
+    TransactionNature nature;
+    public TransactionNature Nature { 
+        get => nature;
+        set {
+            TransactionType = null;
+            nature = value;
+        }
+    }
+
     public NpgsqlTsVector? SearchVector { get; }
 
     #region FK
@@ -35,15 +45,22 @@ public class Transaction {
     public TransactionType? TransactionType { get; set; }
     #endregion
 
-    public Dictionary<TransactionStatus, (string text, int style )> StatusDictionary =>
+    public static Dictionary<TransactionStatus, (string text, int style )> StatusDictionary =>
         new() {
             {TransactionStatus.Pending, new("Pendente", (int)BadgeStyle.Warning) },
             {TransactionStatus.Completed, new("Paga", (int)BadgeStyle.Success) },
             {TransactionStatus.Canceled, new("Cancelada", (int)BadgeStyle.Light) }
         };
 
+    public static Dictionary<TransactionNature, string> NatureDictionary =>
+        new() {
+            { TransactionNature.Inbound, "Entradas" },
+            { TransactionNature.Outbound, "Saídas" }
+        };
+
     public Transaction()
     {
         Date = DateTime.Now;
+        Nature = TransactionNature.Outbound;
     }
 }

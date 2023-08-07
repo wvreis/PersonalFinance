@@ -46,6 +46,17 @@ else {
                                     @bind-Value=@Transaction.Date
                                     Disabled="@Disabled"/>
                             </RadzenColumn>
+
+                            <RadzenColumn Size="2">
+                                <RadzenDropDown 
+                                    Value=@Transaction.Nature
+                                    ValueChanged="@((n) => NatureChange(n))"
+                                    TValue="TransactionNature"
+                                    Data=@Transaction.NatureDictionary
+                                    Style="width: 100%; max-width: 400px;"
+                                    ValueProperty="Key"
+                                    TextProperty="@(ObjectHelper.GetFullName<Dictionary<TransactionNature, string>, string>(x => x.First().Value))"/>
+                            </RadzenColumn>
                         
                             <RadzenColumn Size="12">
                                 <RadzenLabel Text="Descrição" Style="width: 100%" Component="Name"/>
@@ -94,13 +105,14 @@ else {
                                     AllowClear="true" 
                                     AllowFiltering="true"
                                     Placeholder="Selecione..." 
-                                    Data="@TransactionTypes" 
+                                    Data="FilteredTrasactionsByNature" 
                                     Style="width: 100%;" 
                                     TextProperty="@(ObjectHelper.GetFullName<TransactionType, string>(x => x.Description))" 
                                     ValueProperty="Id" 
                                     Name="TransactionTypeId"
                                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                    Disabled="@Disabled">
+                                    Disabled="@Disabled"
+                                    @ref="TransactionTypeDropDown">
                                 </RadzenDropDown>
                                 <RadzenRequiredValidator Component="TransactionTypeId"/>
                                 <ValidationMessage For="@(() => Transaction.TransactionTypeId)" />
@@ -204,6 +216,16 @@ else {
         }
     }
 
+    #region EVENTS
+    RadzenDropDown<int> TransactionTypeDropDown;
+
+    void NatureChange(TransactionNature nature)
+    {
+        Transaction.Nature = nature;
+        TransactionTypeDropDown.Reset();
+    }
+    #endregion
+
     #region AUXILIARY
     async Task LoadObjects()
     {
@@ -243,7 +265,7 @@ else {
         Transaction.StatusDictionary;
     #endregion
 
-    #region VALIDATIONS
+    #region COMPUTED PROPERTIES
     bool Loading =>
         Transaction is null ||
         Accounts is null ||
@@ -251,9 +273,12 @@ else {
 
     bool IsNew => Id == 0;
 
+    bool Disabled => Transaction.Status == TransactionStatus.Canceled;
+
     IEnumerable<IGrouping<string, TransactionType>> GroupedTransactionTypes =>
         TransactionTypes.GroupBy(x => x.TransactionTypeGroup.Description);
 
-    bool Disabled => Transaction.Status == TransactionStatus.Canceled;
+    List<TransactionType> FilteredTrasactionsByNature =>
+        TransactionTypes.Where(x => x.Nature == Transaction.Nature).ToList();        
     #endregion
 }

@@ -39,6 +39,19 @@ else {
                 TValue="DateTime"
                 Change="@((d) => Search(endDate: d))"/>
         </RadzenColumn>
+
+        <RadzenColumn Size="3">
+            <RadzenDropDown 
+                Value=@SearchModel.Status
+                TValue="TransactionStatus?"
+                ValueChanged="@((s) => Search(status: s))"
+                Data=@Transaction.StatusDictionary
+                Style="width: 100%; max-width: 400px;"
+                ValueProperty="Key"
+                AllowClear=true
+                TextProperty="@(ObjectHelper.GetFullName<Dictionary<TransactionStatus, (string text, int style )>, string>(x => x.First().Value.text))"
+                Placeholder="Situação..." />
+        </RadzenColumn>
     </RadzenRow>
 
     <RadzenRow Gap="1rem" Class="rz-mt-8 rz-mb-4" Style="width: 100%" JustifyContent="JustifyContent.SpaceEvenly">
@@ -137,8 +150,8 @@ else {
                 
                 <Template Context="transaction">
                     <RadzenBadge 
-                        BadgeStyle="@((BadgeStyle)transaction.StatusDictionary.First(x => x.Key == transaction.Status).Value.style)"
-                        Text="@(transaction.StatusDictionary.First(x => x.Key == transaction.Status).Value.text)" />
+                        BadgeStyle="@((BadgeStyle)Transaction.StatusDictionary.First(x => x.Key == transaction.Status).Value.style)"
+                        Text="@(Transaction.StatusDictionary.First(x => x.Key == transaction.Status).Value.text)" />
                 </Template>
             
             </RadzenDataGridColumn>
@@ -176,7 +189,7 @@ else {
         }
     }
 
-    async Task Search(DateTime? startDate = null, DateTime? endDate = null)
+    async Task Search(DateTime? startDate = null, DateTime? endDate = null, TransactionStatus? status = null)
     {
         if (startDate.HasValue) {
             SearchModel.StartDate = startDate;
@@ -185,6 +198,8 @@ else {
         if (endDate.HasValue) {
             SearchModel.EndDate = endDate;
         }
+
+        SearchModel.Status = status;
 
         Transactions = await TransactionsAPI.GetSearch(SearchModel);
     }

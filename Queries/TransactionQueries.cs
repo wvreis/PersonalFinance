@@ -2,24 +2,29 @@
 using System.Linq.Expressions;
 using PersonalFinance.Models;
 using Microsoft.EntityFrameworkCore;
+using PersonalFinance.Controllers;
+using PersonalFinance.RequestModels;
 
 namespace PersonalFinance.Queries; 
 public static class TransactionQueries {
     public static IQueryable<Transaction> SearchTransactions(this IQueryable<Transaction> transactions, string searchInfo, string searchVectorInfo = null)
     {
-        Expression<Func<Transaction, bool>> Search = transaction => 
-            !searchInfo.IsNullOrEmpty() ?
-                transaction.Description.ToLower().Contains(searchInfo.ToLower()) ||
-                transaction.Amount.ToString().ToLower().Contains(searchInfo.ToLower()) :
-            true;
+        if (searchInfo.IsNullOrEmpty()) {
+            return transactions;
+        }
 
-        Expression<Func<Transaction, bool>> SearchVector = transaction =>
-            transaction.SearchVector.Matches(EF.Functions.WebSearchToTsQuery(searchVectorInfo));
+        Expression<Func<Transaction, bool>> SearchByDescriptionAndAmount = transaction =>
+            transaction.Description.ToLower().Contains(searchInfo.ToLower()) ||
+            transaction.Amount.ToString().ToLower().Contains(searchInfo.ToLower());
 
-        var result = transactions.Where(Search);        
+        var result = transactions.Where(SearchByDescriptionAndAmount);        
 
-        if (!result.Any())
+        if (!result.Any()) {
+            Expression<Func<Transaction, bool>> SearchVector = transaction =>
+                transaction.SearchVector.Matches(EF.Functions.WebSearchToTsQuery(searchVectorInfo));
+
             result = transactions.Where(SearchVector);
+        }
 
         return result;
     }
@@ -27,15 +32,48 @@ public static class TransactionQueries {
     public static IQueryable<Transaction> WherePeriod(this IQueryable<Transaction> transactions, DateTime startDate, DateTime endDate)
     {
         var result = transactions
-            .Where(t => t.Date.Date >= startDate.Date)
-            .Where(t => t.Date.Date <= endDate.Date);
+            .Where(t => t.Date.Date >= startDate.Date && t.Date.Date <= endDate.Date);
 
         return result;
     }
 
     public static IQueryable<Transaction> WhereStatus(this IQueryable<Transaction> transactions, TransactionStatus? status) 
     {
-        var result = transactions.Where(t => status.HasValue ? t.Status == status : true);
+        if (status.HasValue) {
+            var result = transactions.Where(t => t.Status == status);
+            return result;
+        }
+
+        return transactions;
+    }
+
+    public static IQueryable<Transaction> WhereNature(this IQueryable<Transaction> transactions, TransactionNature? transactionNature = null)
+    {
+        if (transactionNature.HasValue) {
+            var result = transactions
+                .Include(x => x.TransactionType)
+                .Where(t => t.TransactionType.Nature == transactionNature.Value);
+
+            return result;
+        }
+
+        return transactions;
+    }
+
+    public static IQueryable<Transaction> WhereDefaultFilters (
+        this IQueryable<Transaction> transactions, 
+        TransactionSearchModel searchModel, 
+        string searchVectorInfo = null,
+        TransactionNature? transactionNature = null)
+    {
+        var result = transactions
+            .Include(x => x.TransactionType)
+            .Include(x => x.Account)
+            .WherePeriod(searchModel.StartDate.Value, searchModel.EndDate.Value)
+            .WhereNature(transactionNature)
+            .SearchTransactions(searchModel.SearchInfo, searchVectorInfo)
+            .WhereStatus(searchModel.Status);
+
         return result;
     }
 }

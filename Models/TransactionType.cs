@@ -11,6 +11,8 @@ public class TransactionType {
     [StringLength(100)]
     public string Description { get; set; }
 
+    public TransactionNature Nature { get; set; }
+
     #region FK
     [ForeignKey(nameof(TransactionTypeGroupId))]
     public int TransactionTypeGroupId { get; set; }

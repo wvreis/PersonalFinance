@@ -17,7 +17,8 @@ public class TransactionTypeGroups {
             new TransactionTypeGroup { Id = 9, Description = "Impostos" },
             new TransactionTypeGroup { Id = 10, Description = "Doações e Caridade" },
             new TransactionTypeGroup { Id = 11, Description = "Investimentos" },
-            new TransactionTypeGroup { Id = 12, Description = "Seguro" }
+            new TransactionTypeGroup { Id = 12, Description = "Seguro" },
+            new TransactionTypeGroup { Id = 13, Description = "Receitas"}
         };
     }
 }
