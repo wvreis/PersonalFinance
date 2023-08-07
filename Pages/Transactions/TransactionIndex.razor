@@ -17,7 +17,7 @@
     </div>
 }
 else {
-    <RadzenText TextStyle="TextStyle.DisplayH4" class="rz-m-6">
+    <RadzenText TextStyle="TextStyle.DisplayH4">
         Movimentações
     </RadzenText>    
 
@@ -111,6 +111,23 @@ else {
                 Title="Descrição" 
                 Frozen="true" 
                 Width="250px" />
+
+            <RadzenDataGridColumn 
+                TItem="Transaction"
+                Width="50px"
+                Title="Natureza"
+                TextAlign="TextAlign.Center">
+
+                <Template Context="transaction">
+                    @if (transaction.Nature == TransactionNature.Inbound) {
+                        <RadzenIcon Icon="arrow_downward" IconStyle="IconStyle.Success" title="Entrada"/>
+                    }
+                    else{
+                        <RadzenIcon Icon="arrow_upward" IconStyle="IconStyle.Danger" title="Saída"/>
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+
             
             <RadzenDataGridColumn 
                 TItem="Transaction" 
