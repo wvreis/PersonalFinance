@@ -72,7 +72,8 @@ public static class TransactionQueries {
             .WherePeriod(searchModel.StartDate.Value, searchModel.EndDate.Value)
             .WhereNature(transactionNature)
             .SearchTransactions(searchModel.SearchInfo, searchVectorInfo)
-            .WhereStatus(searchModel.Status);
+            .WhereStatus(searchModel.Status)
+            .OrderByDescending(x => x.Date);
 
         return result;
     }

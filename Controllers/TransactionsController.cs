@@ -56,18 +56,9 @@ public class TransactionsController : ControllerBase {
             
             string searchVectorInfo = _spellCheckerService.GetSpellCheckedSearchVectorString(searchModel.SearchInfo);
 
-            async Task<double> GetAmountByStatus(TransactionStatus status)
-            {
-                searchModel.Status = status;
-
-                return await _context.Transactions
-                    .WhereDefaultFilters(searchModel, searchVectorInfo, TransactionNature.Outbound)
-                    .SumAsync(t => t.Amount);
-            }
-
-            var pendingTask = GetAmountByStatus(TransactionStatus.Pending);
-            var completedTask = GetAmountByStatus(TransactionStatus.Completed);
-            var canceledTask = GetAmountByStatus(TransactionStatus.Canceled);
+            var pendingTask = GetAmountByStatus(searchModel, TransactionStatus.Pending, TransactionNature.Outbound);
+            var completedTask = GetAmountByStatus(searchModel, TransactionStatus.Completed, TransactionNature.Outbound);
+            var canceledTask = GetAmountByStatus(searchModel, TransactionStatus.Canceled, TransactionNature.Outbound);
 
             await Task.WhenAll(pendingTask, completedTask, canceledTask);
 
@@ -80,6 +71,42 @@ public class TransactionsController : ControllerBase {
         catch (Exception ex) {
             return BadRequest(ex.Message);
         }
+    }
+
+    [Route($"{nameof(GetTotalIncomingAmountForPeriod)}")]
+    [HttpGet]
+    public async Task<ActionResult<(double pending, double completed, double canceled)>> GetTotalIncomingAmountForPeriod([FromQuery] TransactionSearchModel searchModel)
+    {
+        try {
+            if (_context.Transactions == null) {
+                return NotFound();
+            }
+
+            var pendingTask = GetAmountByStatus(searchModel, TransactionStatus.Pending, TransactionNature.Inbound);
+            var completedTask = GetAmountByStatus(searchModel, TransactionStatus.Completed, TransactionNature.Inbound);
+            var canceledTask = GetAmountByStatus(searchModel, TransactionStatus.Canceled, TransactionNature.Inbound);
+
+            await Task.WhenAll(pendingTask, completedTask, canceledTask);
+
+            var pendingAmount = await pendingTask;
+            var completedAmount = await completedTask;
+            var canceledAmount = await canceledTask;
+
+            return Ok((pendingAmount, completedAmount, canceledAmount));
+        }
+        catch (Exception ex) {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    async Task<double> GetAmountByStatus(TransactionSearchModel searchModel,  TransactionStatus status, TransactionNature nature)
+    {
+        string searchVectorInfo = _spellCheckerService.GetSpellCheckedSearchVectorString(searchModel.SearchInfo);
+        searchModel.Status = status;
+
+        return await _context.Transactions
+            .WhereDefaultFilters(searchModel, searchVectorInfo, nature)
+            .SumAsync(t => t.Amount);
     }
 
     [Route($"{nameof(GetTransaction)}/{{id}}")]
