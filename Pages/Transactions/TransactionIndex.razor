@@ -21,7 +21,7 @@ else {
         Movimentações
     </RadzenText>    
 
-    <RadzenRow Gap="1rem" Class="rz-mt-8 rz-mb-4" Style="width: 100%" JustifyContent="JustifyContent.Center">
+    <RadzenRow Gap="1rem" Class="rz-mt-8 rz-mb-4" Style="width: 100%" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.End">
         <RadzenColumn Size="3">
             <RadzenLabel Text="De" />
             <RadzenDatePicker 
@@ -40,7 +40,7 @@ else {
                 Change="@((d) => Search(endDate: d))"/>
         </RadzenColumn>
 
-        <RadzenColumn Size="3">
+        <RadzenColumn Size="3" >
             <RadzenDropDown 
                 Value=@SearchModel.Status
                 TValue="TransactionStatus?"
@@ -50,7 +50,7 @@ else {
                 ValueProperty="Key"
                 AllowClear=true
                 TextProperty="@(ObjectHelper.GetFullName<Dictionary<TransactionStatus, (string text, int style )>, string>(x => x.First().Value.text))"
-                Placeholder="Situação..." />
+                Placeholder="Situação..."/>
         </RadzenColumn>
     </RadzenRow>
 

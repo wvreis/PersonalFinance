@@ -1,11 +1,13 @@
 ﻿@using PersonalFinance.Helpers.Routes;
 
+<div class="rz-p-0 rz-p-md-0">
+    <RadzenPanelMenu Style="width: 250px">
+        <RadzenPanelMenuItem Text="Home" Icon="home" Path=""></RadzenPanelMenuItem>
+        <RadzenPanelMenuItem Text="Contas" Icon="account_balance" Path="@AccountsRoutes.Index"></RadzenPanelMenuItem>
+        <RadzenPanelMenuItem Text="Movimentações" Icon="attach_money" Path="@TransactionsRoutes.Index"></RadzenPanelMenuItem>
+    </RadzenPanelMenu>
+</div>
 
-<RadzenPanelMenu Style="width: contain">
-    <RadzenPanelMenuItem Text="Home" Icon="home" Path=""></RadzenPanelMenuItem>
-    <RadzenPanelMenuItem Text="Contas" Icon="account_balance" Path="@AccountsRoutes.Index"></RadzenPanelMenuItem>
-    <RadzenPanelMenuItem Text="Movimentações" Icon="attach_money" Path="@TransactionsRoutes.Index"></RadzenPanelMenuItem>
-</RadzenPanelMenu>
 
 @code {
     private bool collapseNavMenu = true;

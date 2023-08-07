@@ -16,147 +16,148 @@
     </div>
 }
 else {
-    <RadzenText TextStyle="TextStyle.DisplayH4" class="rz-m-6">
-        @GetHeaderText() Movimentação
-    </RadzenText>
-
     <RadzenTemplateForm Data="Transaction" Submit="@((args) => Confirm())" InvalidSubmit="InvalidConfirmation" TItem="Transaction">
         <DataAnnotationsValidator />
+        
+        <RadzenText TextStyle="TextStyle.DisplayH4" class="rz-m-6">
+            @GetHeaderText() Movimentação
+        </RadzenText>
 
         <RadzenRow Gap="width: 100%">
-            <RadzenColumn Size="12" SizeMD="6">
-                <RadzenStack Gap="1rem">
-                    <RadzenFieldset Text="Dados">
-                        <RadzenRow AlignItems="AlignItems.Center">
-
-                            <RadzenColumn Size="6">
-                                <RadzenLabel Text="Valor" Style="width: 100%" />
-                                <RadzenNumeric 
-                                    TValue="double" 
-                                    Format="c" 
-                                    @bind-Value=@Transaction.Amount
-                                    Style="width: 100%"
-                                    Disabled="@Disabled"/>
-                            </RadzenColumn>
-
-                            <RadzenColumn Size="6">
-                                <RadzenLabel Text="Data" Style="width: 100%" />
-                                <RadzenDatePicker 
-                                    DateFormat="dd/MM/yyyy"
-                                    @bind-Value=@Transaction.Date
-                                    Disabled="@Disabled"/>
-                            </RadzenColumn>
-
-                            <RadzenColumn Size="2">
-                                <RadzenDropDown 
-                                    Value=@Transaction.Nature
-                                    ValueChanged="@((n) => NatureChange(n))"
-                                    TValue="TransactionNature"
-                                    Data=@Transaction.NatureDictionary
-                                    Style="width: 100%; max-width: 400px;"
-                                    ValueProperty="Key"
-                                    TextProperty="@(ObjectHelper.GetFullName<Dictionary<TransactionNature, string>, string>(x => x.First().Value))"/>
-                            </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6">
+            <RadzenStack Gap="1rem">
+                <RadzenFieldset Text="Dados">
+                    <RadzenRow AlignItems="AlignItems.Center">
                         
-                            <RadzenColumn Size="12">
-                                <RadzenLabel Text="Descrição" Style="width: 100%" Component="Name"/>
-                                <RadzenTextBox 
-                                    @bind-Value="Transaction.Description"
-                                    Style="width: 100%;" 
-                                    Name="Name"
-                                    Disabled="@Disabled"/>
-                                <ValidationMessage For="@(() => Transaction.Description)" />
-                            </RadzenColumn>
+                        <RadzenColumn Size="4">
+                            <RadzenLabel Text="Natureza" Style="width: 100%" />
+                            <RadzenDropDown 
+                                Value=@Transaction.Nature
+                                ValueChanged="@((n) => NatureChange(n))"
+                                TValue="TransactionNature"
+                                Data=@Transaction.NatureDictionary
+                                Style="width: 100%; max-width: 400px;"
+                                ValueProperty="Key"
+                                TextProperty="@(ObjectHelper.GetFullName<Dictionary<TransactionNature, string>, string>(x => x.First().Value))"/>
+                        </RadzenColumn>
 
-                            <RadzenColumn Size="6">
-                                <RadzenLabel Text="Situação" Style="width: 100%" Component=""/>
-                                <RadzenDropDown 
-                                    @bind-Value=@Transaction.Status 
-                                    Data=@ValidStatus.ToList()                                    
-                                    Style="width: 100%; max-width: 400px;"
-                                    ValueProperty="Key"
-                                    TextProperty="@(ObjectHelper.GetFullName<Dictionary<TransactionStatus, (string text, int style )>, string>(x => x.First().Value.text))" 
-                                    Disabled="@Disabled"/>
-                            </RadzenColumn>
+                        <RadzenColumn Size="4">
+                            <RadzenLabel Text="Valor" Style="width: 100%" />
+                            <RadzenNumeric 
+                                TValue="double" 
+                                Format="c" 
+                                @bind-Value=@Transaction.Amount
+                                Style="width: 100%"
+                                Disabled="@Disabled"/>
+                        </RadzenColumn>
 
-                            <RadzenColumn Size="12" SizeMD="6">
-                                <RadzenLabel Text="Conta" Style="width: 100%" Component="AccountId" />
-                                <RadzenDropDown
-                                    @bind-Value="Transaction.AccountId" 
-                                    AllowClear="true" 
-                                    AllowFiltering="true"
-                                    Placeholder="Selecione..." 
-                                    Data="@Accounts" 
-                                    Style="width: 100%;" 
-                                    TextProperty="@(ObjectHelper.GetFullName<Account, string>(x => x.Description))" 
-                                    ValueProperty="Id" 
-                                    Name="AccountId"
-                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                    Disabled="@Disabled">
-                                </RadzenDropDown>
-                                <RadzenRequiredValidator Component="AccountId"/>
-                                <ValidationMessage For="@(() => Transaction.AccountId)" />
-                            </RadzenColumn>
+                        <RadzenColumn Size="4">
+                            <RadzenLabel Text="Data" Style="width: 100%" />
+                            <RadzenDatePicker 
+                                DateFormat="dd/MM/yyyy"
+                                @bind-Value=@Transaction.Date
+                                Disabled="@Disabled"/>
+                        </RadzenColumn>
 
-                            <RadzenColumn Size="12" SizeMD="6">
-                                <RadzenLabel Text="Tipo de Movimentação" Style="width: 100%" Component="TransactionTypeId" />
-                                <RadzenDropDown
-                                    @bind-Value="Transaction.TransactionTypeId" 
-                                    AllowClear="true" 
-                                    AllowFiltering="true"
-                                    Placeholder="Selecione..." 
-                                    Data="FilteredTrasactionsByNature" 
-                                    Style="width: 100%;" 
-                                    TextProperty="@(ObjectHelper.GetFullName<TransactionType, string>(x => x.Description))" 
-                                    ValueProperty="Id" 
-                                    Name="TransactionTypeId"
-                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                    Disabled="@Disabled"
-                                    @ref="TransactionTypeDropDown">
-                                </RadzenDropDown>
-                                <RadzenRequiredValidator Component="TransactionTypeId"/>
-                                <ValidationMessage For="@(() => Transaction.TransactionTypeId)" />
-                            </RadzenColumn>
+                        <RadzenColumn Size="12">
+                            <RadzenLabel Text="Descrição" Style="width: 100%" Component="Name"/>
+                            <RadzenTextBox 
+                                @bind-Value="Transaction.Description"
+                                Style="width: 100%;" 
+                                Name="Name"
+                                Disabled="@Disabled"/>
+                            <ValidationMessage For="@(() => Transaction.Description)" />
+                        </RadzenColumn>
 
-                        </RadzenRow>
-                    </RadzenFieldset>
-                </RadzenStack>
-            </RadzenColumn>
-        </RadzenRow>
+                        <RadzenColumn Size="6">
+                            <RadzenLabel Text="Situação" Style="width: 100%" Component=""/>
+                            <RadzenDropDown 
+                                @bind-Value=@Transaction.Status 
+                                Data=@ValidStatus.ToList()                                    
+                                Style="width: 100%; max-width: 400px;"
+                                ValueProperty="Key"
+                                TextProperty="@(ObjectHelper.GetFullName<Dictionary<TransactionStatus, (string text, int style )>, string>(x => x.First().Value.text))" 
+                                Disabled="@Disabled"/>
+                        </RadzenColumn>
 
-        <RadzenStack 
-            Orientation="Orientation.Horizontal" 
-            JustifyContent="JustifyContent.End" 
-            Gap="1rem"
-            Class="rz-mt-8 rz-mb-4">
+                        <RadzenColumn Size="12" SizeMD="6">
+                            <RadzenLabel Text="Conta" Style="width: 100%" Component="AccountId" />
+                            <RadzenDropDown
+                                @bind-Value="Transaction.AccountId" 
+                                AllowClear="true" 
+                                AllowFiltering="true"
+                                Placeholder="Selecione..." 
+                                Data="@Accounts" 
+                                Style="width: 100%;" 
+                                TextProperty="@(ObjectHelper.GetFullName<Account, string>(x => x.Description))" 
+                                ValueProperty="Id" 
+                                Name="AccountId"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                Disabled="@Disabled">
+                            </RadzenDropDown>
+                            <RadzenRequiredValidator Component="AccountId"/>
+                            <ValidationMessage For="@(() => Transaction.AccountId)" />
+                        </RadzenColumn>
 
-            @if (!Disabled) {
-                <RadzenButton 
-                    ButtonType="ButtonType.Submit" 
-                    Size="ButtonSize.Large" 
-                    Icon="save" 
-                    Text="Salvar" />
-            }
+                        <RadzenColumn Size="12" SizeMD="6">
+                            <RadzenLabel Text="Tipo de Movimentação" Style="width: 100%" Component="TransactionTypeId" />
+                            <RadzenDropDown
+                                @bind-Value="Transaction.TransactionTypeId" 
+                                AllowClear="true" 
+                                AllowFiltering="true"
+                                Placeholder="Selecione..." 
+                                Data="FilteredTrasactionsByNature" 
+                                Style="width: 100%;" 
+                                TextProperty="@(ObjectHelper.GetFullName<TransactionType, string>(x => x.Description))" 
+                                ValueProperty="Id" 
+                                Name="TransactionTypeId"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                Disabled="@Disabled"
+                                @ref="TransactionTypeDropDown">
+                            </RadzenDropDown>
+                            <RadzenRequiredValidator Component="TransactionTypeId"/>
+                            <ValidationMessage For="@(() => Transaction.TransactionTypeId)" />
+                        </RadzenColumn>
 
+                    </RadzenRow>
+                </RadzenFieldset>
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>       
+
+    <RadzenStack 
+        Orientation="Orientation.Horizontal" 
+        JustifyContent="JustifyContent.End" 
+        Gap="1rem"
+        Class="rz-mt-8 rz-mb-4">
+
+        @if (!Disabled) {
             <RadzenButton 
-                ButtonStyle="ButtonStyle.Light" 
-                Variant="Variant.Flat" 
+                ButtonType="ButtonType.Submit" 
                 Size="ButtonSize.Large" 
-                Icon="arrow_back" 
-                Text="Voltar"
-                Click="Back" />
+                Icon="save" 
+                Text="Salvar" />
+        }
 
-            @if (!IsNew && !Disabled) {
-                <RadzenButton 
-                    ButtonStyle="ButtonStyle.Danger"
-                    Variant="Variant.Flat"
-                    Size="ButtonSize.Large"
-                    Icon="remove"
-                    Text="Excluir"
-                    Click="Cancel"/>
-            }
-        </RadzenStack>
-    </RadzenTemplateForm>
+        <RadzenButton 
+            ButtonStyle="ButtonStyle.Light" 
+            Variant="Variant.Flat" 
+            Size="ButtonSize.Large" 
+            Icon="arrow_back" 
+            Text="Voltar"
+            Click="Back" />
+
+        @if (!IsNew && !Disabled) {
+            <RadzenButton 
+                ButtonStyle="ButtonStyle.Danger"
+                Variant="Variant.Flat"
+                Size="ButtonSize.Large"
+                Icon="remove"
+                Text="Excluir"
+                Click="Cancel"/>
+        }
+    </RadzenStack>
+</RadzenTemplateForm>
 }
 
 @code {
