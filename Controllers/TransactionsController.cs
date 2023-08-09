@@ -47,13 +47,13 @@ public class TransactionsController : ControllerBase {
 
     [Route($"{nameof(GetTotalOutgoingAmountForPeriod)}")]
     [HttpGet]
-    public async Task<ActionResult<(double pending, double completed, double canceled)>> GetTotalOutgoingAmountForPeriod([FromQuery] TransactionSearchModel searchModel)
+    public async Task<ActionResult<Tuple<double , double , double>>> GetTotalOutgoingAmountForPeriod([FromQuery] TransactionSearchModel searchModel)
     {
         try {
             if (_context.Transactions == null) {
                 return NotFound();
             }
-            
+
             string searchVectorInfo = _spellCheckerService.GetSpellCheckedSearchVectorString(searchModel.SearchInfo);
 
             var pendingTask = GetAmountByStatus(searchModel, TransactionStatus.Pending, TransactionNature.Outbound);
@@ -66,7 +66,9 @@ public class TransactionsController : ControllerBase {
             var completedAmount = await completedTask;
             var canceledAmount = await canceledTask;
 
-            return Ok((pendingAmount, completedAmount, canceledAmount));
+            var result = Tuple.Create(pendingAmount, completedAmount, canceledAmount);
+
+            return Ok(result);
         }
         catch (Exception ex) {
             return BadRequest(ex.Message);

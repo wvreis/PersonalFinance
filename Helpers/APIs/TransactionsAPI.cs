@@ -27,6 +27,9 @@ public class TransactionsAPI {
 
     public async Task<List<TransactionType>> GetAccountTypes() =>
         await _http.GetFromJsonAsync<List<TransactionType>>(ApiRoute.GetTransactionTypeTypes());
+
+    public async Task<Tuple<double, double, double>> GetTotalOutgoingAmountForPeriod(TransactionSearchModel? searchModel = null) =>
+        await _http.GetFromJsonAsync<Tuple<double, double, double>>(ApiRoute.GetTotalOutgoingAmountForPeriod(searchModel));
     #endregion
 
     #region POST
@@ -67,6 +70,10 @@ public class TransactionsAPI {
 
         public static string GetTransactionTypeTypes() =>
             $"./{URL}/{nameof(TransactionsController.GetTransactionTypes)}";
+
+        public static string GetTotalOutgoingAmountForPeriod(TransactionSearchModel? searchModel) =>
+            $"./{URL}/{nameof(TransactionsController.GetTotalOutgoingAmountForPeriod)}" +
+            searchModel.GenerateQueryString();
         #endregion
 
         #region POST

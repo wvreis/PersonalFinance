@@ -84,6 +84,32 @@ else {
         </RadzenColumn>
     </RadzenRow>
 
+    <RadzenCard Style="width: 100%; padding: 0;" Class="rz-my-12 rz-mx-auto">
+        <RadzenRow Gap="1rem">
+            
+            <RadzenColumn Size="12" SizeLG="6" Class="rz-p-4">
+                <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="0">
+
+                    <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
+                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0" TextAlign="TextAlign.Center">Pendentes</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">@String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", OutgoingAmounts.pending)</RadzenText>
+                    </RadzenColumn>
+
+                    <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
+                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0" TextAlign="TextAlign.Center">Pagas</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">@String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", OutgoingAmounts.completed)</RadzenText>
+                    </RadzenColumn>
+
+                    <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
+                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0" TextAlign="TextAlign.Center">Canceladas</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">@String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", OutgoingAmounts.canceled)</RadzenText>
+                    </RadzenColumn>
+                    
+                </RadzenRow>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenCard>
+
     <RadzenDataGrid       
         PageSize="25" 
         AllowPaging="false" 
@@ -194,6 +220,7 @@ else {
 @code {
     List<Transaction> Transactions { get; set; }
     TransactionSearchModel SearchModel { get; set; } = new();
+    (double pending, double completed, double canceled) OutgoingAmounts { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -219,6 +246,10 @@ else {
         SearchModel.Status = status;
 
         Transactions = await TransactionsAPI.GetSearch(SearchModel);
+
+        var outgoingAmounts = await TransactionsAPI.GetTotalOutgoingAmountForPeriod(SearchModel);
+
+        OutgoingAmounts = new() { pending = outgoingAmounts.Item1, completed = outgoingAmounts.Item2, canceled = outgoingAmounts.Item3 };
     }
 
     async Task ResetSearch()
