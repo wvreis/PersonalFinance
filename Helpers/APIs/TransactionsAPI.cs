@@ -30,6 +30,9 @@ public class TransactionsAPI {
 
     public async Task<Tuple<double, double, double>> GetTotalOutgoingAmountForPeriod(TransactionSearchModel? searchModel = null) =>
         await _http.GetFromJsonAsync<Tuple<double, double, double>>(ApiRoute.GetTotalOutgoingAmountForPeriod(searchModel));
+
+    public async Task<Tuple<double, double, double>> GetTotalIncomingAmountForPeriod(TransactionSearchModel? searchModel = null) =>
+        await _http.GetFromJsonAsync<Tuple<double, double, double>>(ApiRoute.GetTotalIncomingAmountForPeriod(searchModel));
     #endregion
 
     #region POST
@@ -73,6 +76,10 @@ public class TransactionsAPI {
 
         public static string GetTotalOutgoingAmountForPeriod(TransactionSearchModel? searchModel) =>
             $"./{URL}/{nameof(TransactionsController.GetTotalOutgoingAmountForPeriod)}" +
+            searchModel.GenerateQueryString();
+
+        public static string GetTotalIncomingAmountForPeriod(TransactionSearchModel? searchModel) =>
+            $"./{URL}/{nameof(TransactionsController.GetTotalIncomingAmountForPeriod)}" +
             searchModel.GenerateQueryString();
         #endregion
 

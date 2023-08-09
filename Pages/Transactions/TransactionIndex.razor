@@ -87,22 +87,55 @@ else {
     <RadzenCard Style="width: 100%; padding: 0;" Class="rz-my-12 rz-mx-auto">
         <RadzenRow Gap="1rem">
             
-            <RadzenColumn Size="12" SizeLG="6" Class="rz-p-4">
+            <RadzenColumn Size="12" SizeLG="12" Class="rz-p-4">
                 <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="0">
 
                     <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
-                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0" TextAlign="TextAlign.Center">Pendentes</RadzenText>
-                        <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">@String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", OutgoingAmounts.pending)</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0" TextAlign="TextAlign.Center">
+                            Pendentes
+                        </RadzenText>
+                        
+                        <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center" Style="color:red">
+                            @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", OutgoingAmounts.pending)
+                            <RadzenIcon Icon="arrow_upward" IconStyle="IconStyle.Danger" title="Saída"/>
+                        </RadzenText>
+
+                        <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center" Style="color:green">
+                            @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", IncomingAmounts.pending)
+                            <RadzenIcon Icon="arrow_downward" IconStyle="IconStyle.Success" title="Entrada" />
+                        </RadzenText>
                     </RadzenColumn>
 
                     <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
-                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0" TextAlign="TextAlign.Center">Pagas</RadzenText>
-                        <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">@String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", OutgoingAmounts.completed)</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0" TextAlign="TextAlign.Center">
+                            Pagas
+                        </RadzenText>
+
+                        <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center" Style="color:red">
+                            @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", OutgoingAmounts.completed)
+                            <RadzenIcon Icon="arrow_upward" IconStyle="IconStyle.Danger" title="Saída" />
+                        </RadzenText>
+
+                        <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center" Style="color:green">
+                            @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", IncomingAmounts.completed)
+                            <RadzenIcon Icon="arrow_downward" IconStyle="IconStyle.Success" title="Entrada" />
+                        </RadzenText>
                     </RadzenColumn>
 
                     <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
-                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0" TextAlign="TextAlign.Center">Canceladas</RadzenText>
-                        <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">@String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", OutgoingAmounts.canceled)</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0" TextAlign="TextAlign.Center">
+                            Canceladas
+                        </RadzenText>
+
+                        <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center" Style="color:red">
+                            @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", OutgoingAmounts.canceled)
+                            <RadzenIcon Icon="arrow_upward" IconStyle="IconStyle.Danger" title="Saída" />
+                        </RadzenText>
+
+                        <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center" Style="color:green">
+                            @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", IncomingAmounts.canceled)
+                            <RadzenIcon Icon="arrow_downward" IconStyle="IconStyle.Success" title="Entrada" />
+                        </RadzenText>
                     </RadzenColumn>
                     
                 </RadzenRow>
@@ -221,6 +254,7 @@ else {
     List<Transaction> Transactions { get; set; }
     TransactionSearchModel SearchModel { get; set; } = new();
     (double pending, double completed, double canceled) OutgoingAmounts { get; set; }
+    (double pending, double completed, double canceled) IncomingAmounts { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -248,8 +282,10 @@ else {
         Transactions = await TransactionsAPI.GetSearch(SearchModel);
 
         var outgoingAmounts = await TransactionsAPI.GetTotalOutgoingAmountForPeriod(SearchModel);
-
         OutgoingAmounts = new() { pending = outgoingAmounts.Item1, completed = outgoingAmounts.Item2, canceled = outgoingAmounts.Item3 };
+
+        var incomingAmounts = await TransactionsAPI.GetTotalIncomingAmountForPeriod(SearchModel);
+        IncomingAmounts = new() { pending = incomingAmounts.Item1, completed = incomingAmounts.Item2, canceled = incomingAmounts.Item3 };
     }
 
     async Task ResetSearch()

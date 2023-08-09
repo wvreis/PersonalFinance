@@ -47,7 +47,7 @@ public class TransactionsController : ControllerBase {
 
     [Route($"{nameof(GetTotalOutgoingAmountForPeriod)}")]
     [HttpGet]
-    public async Task<ActionResult<Tuple<double , double , double>>> GetTotalOutgoingAmountForPeriod([FromQuery] TransactionSearchModel searchModel)
+    public async Task<ActionResult<(double pending, double completed, double canceled)>> GetTotalOutgoingAmountForPeriod([FromQuery] TransactionSearchModel searchModel)
     {
         try {
             if (_context.Transactions == null) {
@@ -66,9 +66,7 @@ public class TransactionsController : ControllerBase {
             var completedAmount = await completedTask;
             var canceledAmount = await canceledTask;
 
-            var result = Tuple.Create(pendingAmount, completedAmount, canceledAmount);
-
-            return Ok(result);
+            return Ok((pendingAmount, completedAmount, canceledAmount));
         }
         catch (Exception ex) {
             return BadRequest(ex.Message);
