@@ -13,9 +13,9 @@ namespace PersonalFinance.Controllers;
 [ApiController]
 public class TransactionsController : ControllerBase {
     private readonly AppDb _context;
-    private readonly SpellCheckerService _spellCheckerService;
+    private readonly ISpellCheckerService _spellCheckerService;
 
-    public TransactionsController(AppDb context, SpellCheckerService spellCheckerService)
+    public TransactionsController(AppDb context, ISpellCheckerService spellCheckerService)
     {
         _context = context;
         _spellCheckerService = spellCheckerService;

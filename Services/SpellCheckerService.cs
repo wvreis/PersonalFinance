@@ -1,9 +1,14 @@
 ﻿namespace PersonalFinance.Services;
-public class SpellCheckerService {
+public class SpellCheckerService : ISpellCheckerService {
     private IWebHostEnvironment _webHostEnvironment;
     static int initialCapacity = 82765;
     static int maxEditDistanceDictionary = 2;
     public SymSpell SymSpell = new SymSpell(initialCapacity, maxEditDistanceDictionary);
+
+    public SpellCheckerService()
+    {
+            
+    }
 
     public SpellCheckerService(IWebHostEnvironment webHostEnvironment)
     {

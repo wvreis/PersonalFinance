@@ -5,6 +5,11 @@ using System.Reflection.Emit;
 
 namespace PersonalFinance.Data; 
 public class AppDb : IdentityDbContext {
+    public AppDb()
+    {
+            
+    }
+
     public AppDb(DbContextOptions<AppDb> options)
         : base(options)
     {
@@ -52,13 +57,16 @@ public class AppDb : IdentityDbContext {
         #endregion
 
         #region TRANSACTIONS
-        builder.Entity<Transaction>()
-            .HasGeneratedTsVectorColumn(
-                p => p.SearchVector,
-                "portuguese",
-                p => new { p.Description })
-            .HasIndex(p => p.SearchVector)
-            .HasMethod("GIN");
+        builder.Entity<Transaction>(b => {
+            if (Database.IsNpgsql()) {
+                b.HasGeneratedTsVectorColumn(
+                    p => p.SearchVector,
+                    "portuguese",
+                    p => new { p.Description })
+                    .HasIndex(p => p.SearchVector)
+                    .HasMethod("GIN");
+            }
+        });
         #endregion
     }
 

@@ -3,13 +3,11 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using PersonalFinance.Areas.Identity;
 using PersonalFinance.Data;
 using PersonalFinance.Helpers;
 using PersonalFinance.Helpers.APIs;
-using PersonalFinance.Queries;
 using PersonalFinance.Services;
 using System.Net.Mime;
 
@@ -54,7 +52,7 @@ builder.Services.AddScoped<HttpClient>(s => {
     }
     catch {
         return new();
-    }    
+    }
 });
 
 #region APIs
@@ -63,7 +61,7 @@ builder.Services.AddScoped<TransactionsAPI>();
 #endregion
 
 #region SERVICES
-builder.Services.AddScoped<SpellCheckerService>();
+builder.Services.AddScoped<ISpellCheckerService, SpellCheckerService>();
 #endregion
 
 #region HOSTED SERVICES
@@ -75,7 +73,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
     app.UseMigrationsEndPoint();
-    
+
     app.UseSwagger();
     app.UseSwaggerUI(c => {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blazor API V1");
