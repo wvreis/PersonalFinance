@@ -11,25 +11,26 @@ using Microsoft.EntityFrameworkCore;
 namespace PersonalFinance.Tests.Unit;
 
 public class TransactionsControllerTests {    
-    private Mock<ISpellCheckerService> _mockSpellCheckerService;
-    private AppDb _context;
-    private ISpellCheckerService _spellCheckerService;
-    private TransactionsController _controller;
+    private readonly Mock<ISpellCheckerService> _mockSpellCheckerService;
+    private readonly AppDb _context;
+    private readonly TransactionsController _controller;
+
+    private const string DefaultDescription = "test";
+    private const string InvalidString = "\\";
 
     public TransactionsControllerTests()
     {
         _context = GetDatabaseContext();
-
-        _mockSpellCheckerService = new Mock<ISpellCheckerService>();               
-        _spellCheckerService = _mockSpellCheckerService.Object;
-        _controller = new TransactionsController(_context, _spellCheckerService);
+        _mockSpellCheckerService = new Mock<ISpellCheckerService>();
+        _controller = new TransactionsController(_context, _mockSpellCheckerService.Object);
     }
 
-    AppDb GetDatabaseContext()
+    private AppDb GetDatabaseContext()
     {
         var options = new DbContextOptionsBuilder<AppDb>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
+
         var databaseContext = new AppDb(options);
         databaseContext.Database.EnsureCreated();
 
@@ -39,67 +40,84 @@ public class TransactionsControllerTests {
     [Fact]
     public async Task GetTransactions_ReturnsOk_WhenTransactionsExist()
     {
+        // Arrange
         var searchModel = new TransactionSearchModel();
-
-        var transactions = new List<Transaction> {
-            new Transaction {
-                Description = "test",
-                Date = DateTime.Now,
-                TransactionType = new() { 
-                    Description = "test",
-                    TransactionTypeGroup = new() {
-                        Description = "test"
-                    },
-                },
-                Account = new() { 
-                    Description = "test",
-                    AccountType = new() {
-                        Description= "test",
-                    }, 
-                    Bank = new() {
-                        Name = "test",
-                    }
-                },                
-            }
-        };
-
+        var transactions = CreateTestTransactions();
         _context.AddRange(transactions);
         _context.SaveChanges();
 
         _mockSpellCheckerService.Setup(x => x.GetSpellCheckedSearchVectorString(It.IsAny<string>()))
             .Returns(string.Empty);
 
-        var result = await _controller.GetTransactions(searchModel);   
-        
+        // Act
+        var result = await _controller.GetTransactions(searchModel);
+
+        // Assert
         Assert.IsType<OkObjectResult>(result.Result);
-        Assert.Equal(transactions, (result.Result as OkObjectResult).Value);
+        var okResult = result.Result as OkObjectResult;
+        Assert.Equal(transactions, okResult.Value);
     }
 
     [Fact]
     public async Task GetTransactions_ReturnsNotFound_WhenTransactionsAreNull()
     {
+        // Arrange
         var searchModel = new TransactionSearchModel();
-
         _mockSpellCheckerService.Setup(x => x.GetSpellCheckedSearchVectorString(It.IsAny<string>()))
-           .Returns(string.Empty);
-
+            .Returns(string.Empty);
         _context.Transactions = null;
 
+        // Act
         var result = await _controller.GetTransactions(searchModel);
 
+        // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
 
     [Fact]
     public async Task GetTransactions_ReturnsBadRequest_WhenExceptionIsThrown()
     {
-        var searchModel = new TransactionSearchModel {
-            SearchInfo = "\\"
-        };
+        // Arrange
+        var searchModel = new TransactionSearchModel { SearchInfo = InvalidString };
 
+        // Act
         var result = await _controller.GetTransactions(searchModel);
 
+        // Assert
         Assert.IsType<BadRequestObjectResult>(result.Result);
-        Assert.Contains("exception was thrown", (result.Result as BadRequestObjectResult).Value.ToString());
+        var badRequestResult = result.Result as BadRequestObjectResult;
+        Assert.Contains("exception was thrown", badRequestResult.Value.ToString());
+    }
+
+    private List<Transaction> CreateTestTransactions()
+    {
+        return new List<Transaction>
+        {
+                new Transaction
+                {
+                    Description = DefaultDescription,
+                    Date = DateTime.Now,
+                    TransactionType = new TransactionType
+                    {
+                        Description = DefaultDescription,
+                        TransactionTypeGroup = new TransactionTypeGroup
+                        {
+                            Description = DefaultDescription
+                        }
+                    },
+                    Account = new Account
+                    {
+                        Description = DefaultDescription,
+                        AccountType = new AccountType
+                        {
+                            Description = DefaultDescription
+                        },
+                        Bank = new Bank
+                        {
+                            Name = DefaultDescription
+                        }
+                    }
+                }
+            };
     }
 }

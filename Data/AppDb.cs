@@ -1,15 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PersonalFinance.Models;
-using System.Reflection.Emit;
 
 namespace PersonalFinance.Data; 
 public class AppDb : IdentityDbContext {
-    public AppDb()
-    {
-            
-    }
-
     public AppDb(DbContextOptions<AppDb> options)
         : base(options)
     {
