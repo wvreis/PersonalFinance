@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Moq;
 using PersonalFinance.Controllers;
 using PersonalFinance.Data;
+using PersonalFinance.Models;
 using PersonalFinance.RequestModels;
 using PersonalFinance.Services;
 using Xunit;
-using Moq;
-using PersonalFinance.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace PersonalFinance.Tests.Unit;
 
-public class TransactionsControllerTests {    
+public class TransactionsControllerTests {
     private readonly Mock<ISpellCheckerService> _mockSpellCheckerService;
     private readonly AppDb _context;
     private readonly TransactionsController _controller;
@@ -86,6 +86,68 @@ public class TransactionsControllerTests {
         // Assert
         Assert.IsType<BadRequestObjectResult>(result.Result);
         var badRequestResult = result.Result as BadRequestObjectResult;
+        Assert.Contains("exception was thrown", badRequestResult.Value.ToString());
+    }
+
+    [Fact]
+    public async Task GetTotalOutgoingAmountForPeriod_ReturnsOkResult()
+    {
+        // Arrange
+        var searchModel = new TransactionSearchModel();
+        _mockSpellCheckerService.Setup(x => x.GetSpellCheckedSearchVectorString(It.IsAny<string>()))
+            .Returns(string.Empty);
+
+        // Act
+        var result = await _controller.GetTotalOutgoingAmountForPeriod(searchModel);
+
+        // Assert
+        Assert.IsType<OkObjectResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task GetTotalOutgoingAmountForPeriod_ReturnsBadRequestResult_OnException()
+    {
+        // Arrange
+        var searchModel = new TransactionSearchModel { SearchInfo = InvalidString };
+        _mockSpellCheckerService.Setup(x => x.GetSpellCheckedSearchVectorString(It.IsAny<string>()))
+            .Returns(string.Empty);
+
+        // Act
+        var result = await _controller.GetTotalOutgoingAmountForPeriod(searchModel);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Contains("exception was thrown", badRequestResult.Value.ToString());
+    }
+
+    [Fact]
+    public async Task GetTotalIncomingAmountForPeriod_ReturnsOkResult()
+    {
+        // Arrange
+        var searchModel = new TransactionSearchModel();
+        _mockSpellCheckerService.Setup(x => x.GetSpellCheckedSearchVectorString(It.IsAny<string>()))
+            .Returns(string.Empty);
+
+        // Act
+        var result = await _controller.GetTotalIncomingAmountForPeriod(searchModel);
+
+        // Assert
+        Assert.IsType<OkObjectResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task GetTotalIncomingAmountForPeriod_ReturnsBadRequestResult_OnException()
+    {
+        // Arrange
+        var searchModel = new TransactionSearchModel { SearchInfo = InvalidString };
+        _mockSpellCheckerService.Setup(x => x.GetSpellCheckedSearchVectorString(It.IsAny<string>()))
+            .Returns(string.Empty);
+
+        // Act
+        var result = await _controller.GetTotalIncomingAmountForPeriod(searchModel);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
         Assert.Contains("exception was thrown", badRequestResult.Value.ToString());
     }
 

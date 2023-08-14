@@ -43,7 +43,7 @@ public class TransactionsController : ControllerBase {
 
             return BadRequest(ex.Message);
         }
-    }    
+    }
 
     [Route($"{nameof(GetTotalOutgoingAmountForPeriod)}")]
     [HttpGet]
@@ -54,17 +54,7 @@ public class TransactionsController : ControllerBase {
                 return NotFound();
             }
 
-            string searchVectorInfo = _spellCheckerService.GetSpellCheckedSearchVectorString(searchModel.SearchInfo);
-
-            var pendingTask = GetAmountByStatus(searchModel, TransactionStatus.Pending, TransactionNature.Outbound);
-            var completedTask = GetAmountByStatus(searchModel, TransactionStatus.Completed, TransactionNature.Outbound);
-            var canceledTask = GetAmountByStatus(searchModel, TransactionStatus.Canceled, TransactionNature.Outbound);
-
-            await Task.WhenAll(pendingTask, completedTask, canceledTask);
-
-            var pendingAmount = await pendingTask;
-            var completedAmount = await completedTask;
-            var canceledAmount = await canceledTask;
+            var (pendingAmount, completedAmount, canceledAmount) = await GetTotalAmounts(searchModel, TransactionNature.Outbound);
 
             return Ok((pendingAmount, completedAmount, canceledAmount));
         }
@@ -82,15 +72,7 @@ public class TransactionsController : ControllerBase {
                 return NotFound();
             }
 
-            var pendingTask = GetAmountByStatus(searchModel, TransactionStatus.Pending, TransactionNature.Inbound);
-            var completedTask = GetAmountByStatus(searchModel, TransactionStatus.Completed, TransactionNature.Inbound);
-            var canceledTask = GetAmountByStatus(searchModel, TransactionStatus.Canceled, TransactionNature.Inbound);
-
-            await Task.WhenAll(pendingTask, completedTask, canceledTask);
-
-            var pendingAmount = await pendingTask;
-            var completedAmount = await completedTask;
-            var canceledAmount = await canceledTask;
+            var (pendingAmount, completedAmount, canceledAmount) = await GetTotalAmounts(searchModel, TransactionNature.Inbound);
 
             return Ok((pendingAmount, completedAmount, canceledAmount));
         }
@@ -99,14 +81,26 @@ public class TransactionsController : ControllerBase {
         }
     }
 
-    async Task<double> GetAmountByStatus(TransactionSearchModel searchModel,  TransactionStatus status, TransactionNature nature)
+    async Task<List<Tuple<TransactionStatus, double>>> GetAmountByStatus(TransactionSearchModel searchModel, TransactionNature nature)
     {
         string searchVectorInfo = _spellCheckerService.GetSpellCheckedSearchVectorString(searchModel.SearchInfo);
-        searchModel.Status = status;
 
         return await _context.Transactions
             .WhereDefaultFilters(searchModel, searchVectorInfo, nature)
-            .SumAsync(t => t.Amount);
+            .GroupBy(t => t.Status)
+            .Select(g => new Tuple<TransactionStatus, double>(g.Key, g.Sum(t => t.Amount)))            
+            .ToListAsync();
+    }
+
+    private async Task<(double pending, double completed, double canceled)> GetTotalAmounts(TransactionSearchModel searchModel, TransactionNature nature)
+    {
+        var amounts = await GetAmountByStatus(searchModel, nature);
+
+        var pendingAmount = amounts.Where(a => a.Item1 == TransactionStatus.Pending).SingleOrDefault()?.Item2 ?? 0;
+        var completedAmount = amounts.Where(a => a.Item1 == TransactionStatus.Completed).SingleOrDefault()?.Item2 ?? 0;
+        var canceledAmount = amounts.Where(a => a.Item1 == TransactionStatus.Canceled).SingleOrDefault()?.Item2 ?? 0;
+
+        return (pendingAmount, completedAmount, canceledAmount);
     }
 
     [Route($"{nameof(GetTransaction)}/{{id}}")]
