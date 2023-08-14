@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include=".github\workflows\dotnet.yml" />
     <None Include="wwwroot\Dictionaries\pt_br_50k.txt" />
   </ItemGroup>
 
