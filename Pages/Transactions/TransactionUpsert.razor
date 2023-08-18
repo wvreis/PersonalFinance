@@ -230,7 +230,7 @@ else {
     #region AUXILIARY
     async Task LoadObjects()
     {
-        Accounts = await TransactionsAPI.GetAccounts();
+        Accounts = await TransactionsAPI.GetActiveAccounts();
         TransactionTypes = await TransactionsAPI.GetAccountTypes();        
 
         Transaction = IsNew ? new() : await TransactionsAPI.Get(Id);

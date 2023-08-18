@@ -22,6 +22,9 @@ public class TransactionsAPI {
     public async Task<List<Bank>> GetBanks() =>
         await _http.GetFromJsonAsync<List<Bank>>(ApiRoute.GetBanks());
 
+    public async Task<List<Account>> GetActiveAccounts() =>
+        await _http.GetFromJsonAsync<List<Account>>(ApiRoute.GetActiveAccounts());
+
     public async Task<List<Account>> GetAccounts() =>
         await _http.GetFromJsonAsync<List<Account>>(ApiRoute.GetAccounts());
 
@@ -68,8 +71,11 @@ public class TransactionsAPI {
         public static string GetBanks() =>
             $"./{URL}/{nameof(TransactionsController.GetBanks)}";
 
+        public static string GetActiveAccounts() =>
+            $"./{URL}/{nameof(TransactionsController.GetActiveAccounts)}";
+
         public static string GetAccounts() =>
-            $"./{URL}/{nameof(TransactionsController.GetAccounts)}";
+           $"./{URL}/{nameof(TransactionsController.GetAccounts)}";
 
         public static string GetTransactionTypeTypes() =>
             $"./{URL}/{nameof(TransactionsController.GetTransactionTypes)}";

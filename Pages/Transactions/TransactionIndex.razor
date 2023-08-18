@@ -52,6 +52,19 @@ else {
                 TextProperty="@(ObjectHelper.GetFullName<Dictionary<TransactionStatus, (string text, int style )>, string>(x => x.First().Value.text))"
                 Placeholder="Situação..."/>
         </RadzenColumn>
+
+         <RadzenColumn Size="3" >
+            <RadzenDropDown 
+                Value=@SearchModel.AccountId
+                TValue="int?"
+                ValueChanged="@((a) => Search(accountId: a))"
+                Data=@Accounts
+                Style="width: 100%; max-width: 400px;"
+                ValueProperty="Id"
+                AllowClear=true
+                TextProperty="@(ObjectHelper.GetFullName<Account, string>(x => x.Description))"
+                Placeholder="Conta..."/>
+        </RadzenColumn>
     </RadzenRow>
 
     <RadzenRow Gap="1rem" Class="rz-mt-8 rz-mb-4" Style="width: 100%" JustifyContent="JustifyContent.SpaceEvenly">
@@ -252,6 +265,7 @@ else {
 
 @code {
     List<Transaction> Transactions { get; set; }
+    List<Account> Accounts { get; set; }
     TransactionSearchModel SearchModel { get; set; } = new();
     (double pending, double completed, double canceled) OutgoingAmounts { get; set; }
     (double pending, double completed, double canceled) IncomingAmounts { get; set; }
@@ -259,6 +273,8 @@ else {
     protected override async Task OnInitializedAsync()
     {
         try {
+            Accounts = await TransactionsAPI.GetAccounts();
+
             await Search();
         }
         catch (Exception ex) {
@@ -267,7 +283,7 @@ else {
         }
     }
 
-    async Task Search(DateTime? startDate = null, DateTime? endDate = null, TransactionStatus? status = null)
+    async Task Search(DateTime? startDate = null, DateTime? endDate = null, int? accountId = null, TransactionStatus? status = null)
     {
         if (startDate.HasValue) {
             SearchModel.StartDate = startDate;
@@ -275,6 +291,13 @@ else {
 
         if (endDate.HasValue) {
             SearchModel.EndDate = endDate;
+        }
+
+        if (accountId.HasValue) {
+            SearchModel.AccountId = accountId;
+        }
+        else {
+            SearchModel.AccountId = null;
         }
 
         SearchModel.Status = status;

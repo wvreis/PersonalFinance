@@ -16,6 +16,8 @@ public class TransactionSearchModel {
 
     public TransactionStatus? Status { get; set; }
 
+    public int? AccountId { get; set; }
+
     public TransactionSearchModel()
     {
         DateTime today = DateTime.Now;
@@ -41,6 +43,10 @@ public class TransactionSearchModel {
 
         if (Status.HasValue) {
             queryBuilder.Add(nameof(Status), Status.Value.ToString());
+        }
+
+        if (AccountId.HasValue) {
+            queryBuilder.Add(nameof(AccountId), AccountId.Value.ToString());
         }
 
         return queryBuilder.ToQueryString().ToString();

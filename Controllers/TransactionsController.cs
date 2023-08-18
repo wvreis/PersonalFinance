@@ -143,9 +143,9 @@ public class TransactionsController : ControllerBase {
         }
     }
 
-    [Route($"{nameof(GetAccounts)}")]
+    [Route($"{nameof(GetActiveAccounts)}")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Account>>> GetAccounts()
+    public async Task<ActionResult<IEnumerable<Account>>> GetActiveAccounts()
     {
         try {
             if (_context.Accounts == null) {
@@ -155,6 +155,23 @@ public class TransactionsController : ControllerBase {
             return await _context.Accounts
                 .Where(acc => acc.Status)
                 .ToListAsync();
+        }
+        catch (Exception ex) {
+
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Route($"{nameof(GetAccounts)}")]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Account>>> GetAccounts()
+    {
+        try {
+            if (_context.Accounts == null) {
+                return NotFound();
+            }
+
+            return await _context.Accounts.ToListAsync();
         }
         catch (Exception ex) {
 

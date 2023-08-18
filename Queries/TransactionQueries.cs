@@ -2,7 +2,6 @@
 using System.Linq.Expressions;
 using PersonalFinance.Models;
 using Microsoft.EntityFrameworkCore;
-using PersonalFinance.Controllers;
 using PersonalFinance.RequestModels;
 
 namespace PersonalFinance.Queries; 
@@ -60,9 +59,21 @@ public static class TransactionQueries {
         return transactions;
     }
 
+    public static IQueryable<Transaction> WhereAccount(this IQueryable<Transaction> transactions, int? accountId)
+    {
+        if (accountId.HasValue) {
+            var result = transactions
+                .Where(t => t.AccountId == accountId.Value);
+
+            return result;
+        }
+
+        return transactions;
+    }
+
     public static IQueryable<Transaction> WhereDefaultFilters (
         this IQueryable<Transaction> transactions, 
-        TransactionSearchModel searchModel, 
+        TransactionSearchModel searchModel,         
         string searchVectorInfo = null,
         TransactionNature? transactionNature = null)
     {
@@ -71,6 +82,7 @@ public static class TransactionQueries {
             .Include(x => x.Account)
             .WherePeriod(searchModel.StartDate.Value, searchModel.EndDate.Value)
             .WhereNature(transactionNature)
+            .WhereAccount(searchModel.AccountId)
             .SearchTransactions(searchModel.SearchInfo, searchVectorInfo)
             .WhereStatus(searchModel.Status)
             .OrderByDescending(x => x.Date);
