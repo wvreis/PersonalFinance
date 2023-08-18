@@ -151,12 +151,56 @@ public class TransactionsControllerTests {
         Assert.Contains("exception was thrown", badRequestResult.Value.ToString());
     }
 
+    [Fact]
+    public async Task GetTransaction_ReturnsOkResult()
+    {
+        // Arrange
+        int id = 1;
+        var transactions = CreateTestTransactions();
+        _context.AddRange(transactions);
+        _context.SaveChanges();
+
+        // Act
+        var result = await _controller.GetTransaction(id);
+
+        // Assert
+        Assert.IsType<OkObjectResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task GetTransaction_ReturnsNotFound()
+    {
+        // Arrange
+        int id = 1;
+
+        // Act
+        var result = await _controller.GetTransaction(id);
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task GetTransaction_ReturnsNotFound_WhenContextDbSetIsNull()
+    {
+        // Arrange
+        int id = 1;
+        _context.Transactions = null;
+
+        // Act
+        var result = await _controller.GetTransaction(id);
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+
     private List<Transaction> CreateTestTransactions()
     {
         return new List<Transaction>
         {
                 new Transaction
                 {
+                    Id = 1,
                     Description = DefaultDescription,
                     Date = DateTime.Now,
                     TransactionType = new TransactionType
