@@ -12,103 +12,94 @@
 
 @if (Loading) {
     <div class="rz-m-12">
-        <RadzenProgressBar 
-            Value="100" 
-            ShowValue="false" 
-            Mode="ProgressBarMode.Indeterminate" />
+        <RadzenProgressBar Value="100"
+                           ShowValue="false"
+                           Mode="ProgressBarMode.Indeterminate" />
     </div>
 }
 else {
-    <RadzenText TextStyle="TextStyle.DisplayH4" class="rz-m-6">
-        Minhas Contas
-    </RadzenText>
+    <div class="container">
+        <RadzenText TextStyle="TextStyle.DisplayH4" class="rz-m-6">
+            Minhas Contas
+        </RadzenText>
 
-    <RadzenRow Gap="1rem" Class="rz-mt-8 rz-mb-4" Style="width: 100%" JustifyContent="JustifyContent.SpaceEvenly">
-        <RadzenColumn Size="10">
-            <RadzenTextBox 
-                Placeholder="Pesquisar por..."
-                Style="width: 100%"
-                @bind-Value="@SearchInfo"/>                   
-        </RadzenColumn>
+        <RadzenRow Gap="1rem" Class="rz-mt-8 rz-mb-4" Style="width: 100%" JustifyContent="JustifyContent.SpaceEvenly">
+            <RadzenColumn Size="10">
+                <RadzenTextBox Placeholder="Pesquisar por..."
+                               Style="width: 100%"
+                               @bind-Value="@SearchInfo" />
+            </RadzenColumn>
 
-        <RadzenColumn>
-            <RadzenButton 
-                Icon="search"
-                Style="width: 100%"
-                Click="(() => Search(SearchInfo))"/>
-        </RadzenColumn>
+            <RadzenColumn>
+                <RadzenButton Icon="search"
+                              Style="width: 100%"
+                              Click="(() => Search(SearchInfo))" />
+            </RadzenColumn>
 
-        <RadzenColumn>
-            <RadzenButton 
-                Icon="history"
-                Style="width: 100%"
-                Click="(() => ResetSearch())" />
-        </RadzenColumn>
+            <RadzenColumn>
+                <RadzenButton Icon="history"
+                              Style="width: 100%"
+                              Click="(() => ResetSearch())" />
+            </RadzenColumn>
 
-        <RadzenColumn>
-            <RadzenButton 
-                Icon="add"
-                Style="width: 100%"
-                Click="NavigateToAddition"/>
-        </RadzenColumn>
-    </RadzenRow>
+            <RadzenColumn>
+                <RadzenButton Icon="add"
+                              Style="width: 100%"
+                              Click="NavigateToAddition" />
+            </RadzenColumn>
+        </RadzenRow>
 
-    <RadzenDataGrid       
-            PageSize="25" 
-            AllowPaging="false" 
-            PagerHorizontalAlign="HorizontalAlign.Left" 
-            ShowPagingSummary="false"
-            Data="@Accounts" 
-            TItem="Account" 
-            ColumnWidth="300px" 
-            LogicalFilterOperator="LogicalFilterOperator.Or"
-            EmptyText="Não há registros a serem listados.">
-        
+        <RadzenDataGrid PageSize="25"
+                        AllowPaging="false"
+                        PagerHorizontalAlign="HorizontalAlign.Left"
+                        ShowPagingSummary="false"
+                        Data="@Accounts"
+                        TItem="Account"
+                        ColumnWidth="300px"
+                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                        EmptyText="Não há registros a serem listados.">
+
             <Columns>
-                <RadzenDataGridColumn 
-                    TItem="Account"
-                    Property="@(ObjectHelper.GetFullName<Account, int>(x => x.Id))"
-                    Title="#" 
-                    Frozen="true" 
-                    Width="80px" 
-                    TextAlign="TextAlign.Center" 
-                    CssClass=“font-weight-bold” />
-            
-                <RadzenDataGridColumn 
-                    TItem="Account"
-                    Property="@(ObjectHelper.GetFullName<Account, string>(x => x.Description))"
-                    Title="Descrição" 
-                    Frozen="true" 
-                    Width="160px" />
-            
-                <RadzenDataGridColumn 
-                    TItem="Account" 
-                    Property="@(ObjectHelper.GetFullName<Account, int>(x => x.Bank.Id))" 
-                    Title="Nº Banco"
-                    Width="80px"/>
-            
-                <RadzenDataGridColumn 
-                    TItem="Account"
-                    Property="@(ObjectHelper.GetFullName<Account, string>(x => x.Bank.Name))"
-                    Title="Banco" 
-                    Width="160px" />
-            
-                <RadzenDataGridColumn 
-                    TItem="Account" 
-                    Property="" 
-                    Title="" 
-                    Width="160px" 
-                    TextAlign="TextAlign.End">
+                <RadzenDataGridColumn TItem="Account"
+                                      Property="@(ObjectHelper.GetFullName<Account, int>(x => x.Id))"
+                                      Title="#"
+                                      Frozen="true"
+                                      Width="80px"
+                                      TextAlign="TextAlign.Center"
+                                      CssClass=“font-weight-bold” />
+
+                <RadzenDataGridColumn TItem="Account"
+                                      Property="@(ObjectHelper.GetFullName<Account, string>(x => x.Description))"
+                                      Title="Descrição"
+                                      Frozen="true"
+                                      Width="160px" />
+
+                <RadzenDataGridColumn TItem="Account"
+                                      Property="@(ObjectHelper.GetFullName<Account, int>(x => x.Bank.Id))"
+                                      Title="Nº Banco"
+                                      Width="80px" />
+
+                <RadzenDataGridColumn TItem="Account"
+                                      Property="@(ObjectHelper.GetFullName<Account, string>(x => x.Bank.Name))"
+                                      Title="Banco"
+                                      Width="160px" />
+
+                <RadzenDataGridColumn TItem="Account"
+                                      Property=""
+                                      Title=""
+                                      Width="160px"
+                                      TextAlign="TextAlign.End">
 
                     <Template Context="account">
                         <a href="@AccountsRoutes.GoToEdition(account.Id)">
-                            <RadzenButton Text="Editar"/>
+                            <RadzenButton Icon="edit" title="Editar"/>
                         </a>
                     </Template>
 
                 </RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
+    </div>    
 }
 
 @code{

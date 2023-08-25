@@ -1,21 +1,22 @@
 ﻿@using PersonalFinance.Helpers.Routes;
 
-<div class="rz-p-0 rz-p-md-0">
-    <RadzenPanelMenu Style="width: 220px">
+@* <RadzenStack AlignItems="AlignItems.Center">
+    <RadzenPanelMenu Style="width: 280px;">
         <RadzenPanelMenuItem Text="Home" Icon="home" Path=""></RadzenPanelMenuItem>
         <RadzenPanelMenuItem Text="Contas" Icon="account_balance" Path="@AccountsRoutes.Index"></RadzenPanelMenuItem>
         <RadzenPanelMenuItem Text="Movimentações" Icon="attach_money" Path="@TransactionsRoutes.Index"></RadzenPanelMenuItem>
     </RadzenPanelMenu>
-</div>
+</RadzenStack>  To see if other menu type is better.*@ 
 
+
+<RadzenStack AlignItems="AlignItems.Stretch">
+    <RadzenMenu class="justify-content-center">
+        <RadzenPanelMenuItem Text="Home" Icon="home" Path="/" ></RadzenPanelMenuItem>
+        <RadzenPanelMenuItem Text="Contas" Icon="account_balance" Path="@AccountsRoutes.Index"></RadzenPanelMenuItem>
+        <RadzenPanelMenuItem Text="Movimentações" Icon="attach_money" Path="@TransactionsRoutes.Index"></RadzenPanelMenuItem>
+    </RadzenMenu>
+</RadzenStack>
 
 @code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+    
 }

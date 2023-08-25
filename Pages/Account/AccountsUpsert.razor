@@ -16,118 +16,111 @@
     </div>
 }
 else {
-    <RadzenText TextStyle="TextStyle.DisplayH4" class="rz-m-6">
-        @GetHeaderText() Conta
-    </RadzenText>
+    <div class="container">
+        <RadzenText TextStyle="TextStyle.DisplayH4" class="rz-m-6">
+            @GetHeaderText() Conta
+        </RadzenText>
 
-    <RadzenTemplateForm Data="Account" Submit="@((args) => Confirm())" InvalidSubmit="InvalidConfirmation" TItem="Account">
-        <DataAnnotationsValidator />
+        <RadzenTemplateForm Data="Account" Submit="@((args) => Confirm())" InvalidSubmit="InvalidConfirmation" TItem="Account">
+            <DataAnnotationsValidator />
 
-        <RadzenRow Gap="width: 100%">
-            <RadzenColumn Size="12" SizeMD="6">
-                <RadzenStack Gap="1rem">
-                    <RadzenFieldset Text="Dados">
-                        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenRow Gap="width: 100%">
+                <RadzenColumn Size="12" SizeMD="6">
+                    <RadzenStack Gap="1rem">
+                        <RadzenFieldset Text="Dados">
+                            <RadzenRow AlignItems="AlignItems.Center">
 
-                            <RadzenColumn>
-                                <RadzenLabel Text="Descrição" Style="width: 100%" Component="Name"/>
-                                <RadzenTextBox 
-                                    @bind-Value="Account.Description"
-                                    Style="width: 100%;" 
-                                    Name="Name"
-                                    />
-                                <ValidationMessage For="@(() => Account.Description)"/>
-                            </RadzenColumn>
+                                <RadzenColumn>
+                                    <RadzenLabel Text="Descrição" Style="width: 100%" Component="Name" />
+                                    <RadzenTextBox @bind-Value="Account.Description"
+                                                   Style="width: 100%;"
+                                                   Name="Name" />
+                                    <ValidationMessage For="@(() => Account.Description)" />
+                                </RadzenColumn>
 
-                            <RadzenColumn>
-                                <RadzenLabel Text="Saldo Inicial" Style="width: 100%" />
-                                <RadzenNumeric 
-                                    TValue="double" 
-                                    Format="c" 
-                                    @bind-Value=@Account.OpeningBalance 
-                                    Style="width: 100%"/>
-                            </RadzenColumn>
+                                <RadzenColumn>
+                                    <RadzenLabel Text="Saldo Inicial" Style="width: 100%" />
+                                    <RadzenNumeric TValue="double"
+                                                   Format="c"
+                                                   @bind-Value=@Account.OpeningBalance
+                                                   Style="width: 100%" />
+                                </RadzenColumn>
 
-                            <RadzenColumn Size="12" SizeMD="6">
-                                <RadzenLabel Text="Banco" Style="width: 100%" Component="BankId"/>
-                                <RadzenDropDown
-                                    @bind-Value="Account.BankId" 
-                                    AllowClear="true" 
-                                    AllowFiltering="true"
-                                    Placeholder="Selecione..." 
-                                    Data="@Banks" 
-                                    Style="width: 100%;" 
-                                    TextProperty="@(ObjectHelper.GetFullName<Bank, string>(x => x.Name))" 
-                                    ValueProperty="Id" 
-                                    Name="BankId"
-                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
-                                </RadzenDropDown>
-                                <RadzenRequiredValidator Component="BankId"/>
-                                <ValidationMessage For="@(() => Account.BankId)" />
-                            </RadzenColumn>
+                                <RadzenColumn Size="12" SizeMD="6">
+                                    <RadzenLabel Text="Banco" Style="width: 100%" Component="BankId" />
+                                    <RadzenDropDown @bind-Value="Account.BankId"
+                                                    AllowClear="true"
+                                                    AllowFiltering="true"
+                                                    Placeholder="Selecione..."
+                                                    Data="@Banks"
+                                                    Style="width: 100%;"
+                                                    TextProperty="@(ObjectHelper.GetFullName<Bank, string>(x => x.Name))"
+                                                    ValueProperty="Id"
+                                                    Name="BankId"
+                                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                                    </RadzenDropDown>
+                                    <RadzenRequiredValidator Component="BankId" />
+                                    <ValidationMessage For="@(() => Account.BankId)" />
+                                </RadzenColumn>
 
-                            <RadzenColumn Size="12" SizeMD="6">
-                                <RadzenLabel Text="Tipo de Conta" Style="width: 100%" Component="AccountTypeId" />
-                                <RadzenDropDown
-                                    @bind-Value="Account.AccountTypeId" 
-                                    AllowClear="true" 
-                                    AllowFiltering="true"
-                                    Placeholder="Selecione..." 
-                                    Data="@AccountTypes" 
-                                    Style="width: 100%;" 
-                                    TextProperty="@(ObjectHelper.GetFullName<AccountType, string>(x => x.Description))" 
-                                    ValueProperty="Id" 
-                                    Name="AccountTypeId"
-                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
-                                </RadzenDropDown>
-                                <RadzenRequiredValidator Component="AccountTypeId" />
-                                <ValidationMessage For="@(() => Account.AccountTypeId)" />
-                            </RadzenColumn>
+                                <RadzenColumn Size="12" SizeMD="6">
+                                    <RadzenLabel Text="Tipo de Conta" Style="width: 100%" Component="AccountTypeId" />
+                                    <RadzenDropDown @bind-Value="Account.AccountTypeId"
+                                                    AllowClear="true"
+                                                    AllowFiltering="true"
+                                                    Placeholder="Selecione..."
+                                                    Data="@AccountTypes"
+                                                    Style="width: 100%;"
+                                                    TextProperty="@(ObjectHelper.GetFullName<AccountType, string>(x => x.Description))"
+                                                    ValueProperty="Id"
+                                                    Name="AccountTypeId"
+                                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+                                    </RadzenDropDown>
+                                    <RadzenRequiredValidator Component="AccountTypeId" />
+                                    <ValidationMessage For="@(() => Account.AccountTypeId)" />
+                                </RadzenColumn>
 
-                            @if (!IsNew) {
-                            }
-                            <RadzenColumn>
-                                <RadzenLabel Text="@Account.Status.GetActiveInactive()" Style="width: 100%" />
-                                <RadzenSwitch @bind-Value="@Account.Status" Disabled="@(IsNew)"/>
-                            </RadzenColumn>
+                                @if (!IsNew) {
+                                }
+                                <RadzenColumn>
+                                    <RadzenLabel Text="@Account.Status.GetActiveInactive()" Style="width: 100%" />
+                                    <RadzenSwitch @bind-Value="@Account.Status" Disabled="@(IsNew)" />
+                                </RadzenColumn>
 
-                        </RadzenRow>
-                    </RadzenFieldset>
-                </RadzenStack>
-            </RadzenColumn>
-        </RadzenRow>
+                            </RadzenRow>
+                        </RadzenFieldset>
+                    </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
 
-        <RadzenStack 
-            Orientation="Orientation.Horizontal" 
-            JustifyContent="JustifyContent.End" 
-            Gap="1rem"
-            Class="rz-mt-8 rz-mb-4">
+            <RadzenStack Orientation="Orientation.Horizontal"
+                         JustifyContent="JustifyContent.End"
+                         Gap="1rem"
+                         Class="rz-mt-8 rz-mb-4">
 
-            <RadzenButton 
-                ButtonType="ButtonType.Submit" 
-                Size="ButtonSize.Large" 
-                Icon="save" 
-                Text="Salvar" />
+                <RadzenButton ButtonType="ButtonType.Submit"
+                              Size="ButtonSize.Large"
+                              Icon="save"
+                              Text="Salvar" />
 
-            <RadzenButton 
-                ButtonStyle="ButtonStyle.Light" 
-                Variant="Variant.Flat" 
-                Size="ButtonSize.Large" 
-                Icon="arrow_back" 
-                Text="Voltar"
-                Click="Back" />
+                <RadzenButton ButtonStyle="ButtonStyle.Light"
+                              Variant="Variant.Flat"
+                              Size="ButtonSize.Large"
+                              Icon="arrow_back"
+                              Text="Voltar"
+                              Click="Back" />
 
-            @if (!IsNew) {
-                <RadzenButton 
-                    ButtonStyle="ButtonStyle.Danger"
-                    Variant="Variant.Flat"
-                    Size="ButtonSize.Large"
-                    Icon="remove"
-                    Text="Excluir"
-                    Click="Remove"/>
-            }
-        </RadzenStack>
-    </RadzenTemplateForm>
+                @if (!IsNew) {
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger"
+                                  Variant="Variant.Flat"
+                                  Size="ButtonSize.Large"
+                                  Icon="remove"
+                                  Text="Excluir"
+                                  Click="Remove" />
+                }
+            </RadzenStack>
+        </RadzenTemplateForm>
+    </div>    
 }
 
 
