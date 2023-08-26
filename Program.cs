@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using PersonalFinance.Areas.Identity;
 using PersonalFinance.Data;
@@ -13,10 +14,19 @@ using System.Net.Mime;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Get Configuration from envaironment command.
+string databaseHost = builder.Configuration["DATABASEHOST"] ?? string.Empty;
+string databasePort = builder.Configuration["DATABASEPORT"] ?? string.Empty;
+string databaseName = builder.Configuration["DATABASENAME"] ?? string.Empty;
+string databaseUser = builder.Configuration["DATABASEUSER"] ?? string.Empty;
+string databasePassword = builder.Configuration["POSTGRES_PASSWORD"] ?? string.Empty;
+
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionStringDocker = $"Host={databaseHost};Port={databasePort};Database={databaseName};Username={databaseUser};Password={databasePassword}";
+
 builder.Services.AddDbContext<AppDb>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(databaseHost.IsNullOrEmpty() ? connectionString : connectionStringDocker));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<AppDb>();
@@ -25,7 +35,20 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 builder.Services.AddSwaggerGen(options => options.CustomSchemaIds(type => type.FullName));
 
-builder.Services.AddHttpClient<HttpClient>();
+builder.Services.AddScoped<HttpClient>(s => {
+    try {
+        var uriHelper = s.GetRequiredService<NavigationManager>();
+        return new HttpClient {
+            BaseAddress = new Uri(uriHelper.BaseUri),
+            Timeout = TimeSpan.FromMinutes(15)
+        };
+    }
+    catch {
+        return new();
+    }
+    // Creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.
+});
+
 builder.Services.AddScoped<HttpContextAccessor>();
 builder.Services.AddScoped<DialogService>();
 

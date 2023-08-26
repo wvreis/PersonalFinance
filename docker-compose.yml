@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:latest
+    env_file: docker.env
+    ports:
+      - "5433:5432"
+
+  personal-finance-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: docker.env
+    ports:
+      - "80:80"
+      - "8080:8080"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
