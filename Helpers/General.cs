@@ -10,6 +10,7 @@ public class General : ComponentBase {
     #region APIs
     [Inject] public AccountsAPI AccountsAPI { get; set; }
     [Inject] public TransactionsAPI TransactionsAPI { get; set; }
+    [Inject] public PanelAPI PanelAPI { get; set; }
     #endregion
 
     public async Task InvalidConfirmation(FormInvalidSubmitEventArgs args)

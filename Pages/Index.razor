@@ -1,4 +1,8 @@
 ﻿@using System.Globalization
+@using PersonalFinance.DTOs;
+@using PersonalFinance.Helpers.APIs;
+@using PersonalFinance.Helpers;
+@inherits General
 @page "/"
 
 <PageTitle>Início</PageTitle>
@@ -12,10 +16,10 @@
             </RadzenCard>
             
             <RadzenChart>
-                <RadzenColumnSeries Data="@revenue2020" CategoryProperty="Quarter" Title="2020" LineType="LineType.Dashed" ValueProperty="Revenue">
+                <RadzenColumnSeries Data="@panelDTO.Incoming" CategoryProperty="Month" Title="Entradas" LineType="LineType.Dashed" ValueProperty="Amount" Fill="green">
                     <RadzenSeriesDataLabels Visible="@showDataLabels" />
                 </RadzenColumnSeries>
-                <RadzenColumnSeries Data="@revenue2019" CategoryProperty="Quarter" Title="2019" ValueProperty="Revenue">
+                <RadzenColumnSeries Data="@panelDTO.Outgoing" CategoryProperty="Month" Title="Saídas" LineType="LineType.Dashed" ValueProperty="Amount" Fill="red">
                     <RadzenSeriesDataLabels Visible="@showDataLabels" />
                 </RadzenColumnSeries>
                 <RadzenColumnOptions Radius="5" />
@@ -28,62 +32,17 @@
 </div>
 
 @code {
+    PanelDTO panelDTO { get; set; } = new();    
     bool showDataLabels = false;
 
-    class DataItem {
-        public string Quarter { get; set; }
-        public double Revenue { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        panelDTO = await PanelAPI.GetPanelItems();
     }
 
     string FormatAsUSD(object value)
     {
         return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("pt-BR"));
     }
-
-    DataItem[] revenue2019 = new DataItem[] {
-        new DataItem
-        {
-            Quarter = "Q1",
-            Revenue = 234000
-        },
-        new DataItem
-        {
-            Quarter = "Q2",
-            Revenue = 284000
-        },
-        new DataItem
-        {
-            Quarter = "Q3",
-            Revenue = 274000
-        },
-        new DataItem
-        {
-            Quarter = "Q4",
-            Revenue = 294000
-        },
-    };
-
-    DataItem[] revenue2020 = new DataItem[] {
-        new DataItem
-        {
-            Quarter = "Q1",
-            Revenue = 254000
-        },
-        new DataItem
-        {
-            Quarter = "Q2",
-            Revenue = 324000
-        },
-        new DataItem
-        {
-            Quarter = "Q3",
-            Revenue = 354000
-        },
-        new DataItem
-        {
-            Quarter = "Q4",
-            Revenue = 394000
-        },
-
-    };
+    
 }

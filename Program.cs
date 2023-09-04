@@ -81,6 +81,7 @@ builder.Services.AddScoped<HttpClient>(s => {
 #region APIs
 builder.Services.AddScoped<AccountsAPI>();
 builder.Services.AddScoped<TransactionsAPI>();
+builder.Services.AddScoped<PanelAPI>();
 #endregion
 
 #region SERVICES
