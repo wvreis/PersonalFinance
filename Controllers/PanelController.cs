@@ -56,13 +56,5 @@ public class PanelController : ControllerBase {
             .GroupBy(t => t.Date.Month)
             .ToListAsync();
     }
-
-    private List<PanelItem> MapTransactionGroupsToItems(List<IGrouping<int, Transaction>> transactionGroups)
-    {
-        return transactionGroups.Select(group => new PanelItemDTO {
-            Month = group.First().Date.ToString("MMMM"),
-            Amount = group.Sum(t => t.Amount)
-        }).ToList();
-    }
     #endregion
 }
