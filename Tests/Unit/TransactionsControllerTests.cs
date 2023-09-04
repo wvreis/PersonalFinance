@@ -44,7 +44,7 @@ public class TransactionsControllerTests {
         var searchModel = new TransactionSearchModel();
         var transactions = CreateTestTransactions();
         _context.AddRange(transactions);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         _mockSpellCheckerService.Setup(x => x.GetSpellCheckedSearchVectorString(It.IsAny<string>()))
             .Returns(string.Empty);
@@ -121,6 +121,20 @@ public class TransactionsControllerTests {
     }
 
     [Fact]
+    public async Task GetTotalOutgoingAmountForPeriod_TransactionsNull_ReturnsNotFound()
+    {
+        // Arrange
+        int id = 1;
+        _context.Transactions = null;
+
+        // Act
+        var result = await _controller.GetTotalOutgoingAmountForPeriod(new());
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+
+    [Fact]
     public async Task GetTotalIncomingAmountForPeriod_ReturnsOkResult()
     {
         // Arrange
@@ -152,13 +166,27 @@ public class TransactionsControllerTests {
     }
 
     [Fact]
+    public async Task GetTotalIncomingAmountForPeriod_TransactionsNull_ReturnsNotFound()
+    {
+        // Arrange
+        int id = 1;
+        _context.Transactions = null;
+
+        // Act
+        var result = await _controller.GetTotalIncomingAmountForPeriod(new());
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+
+    [Fact]
     public async Task GetTransaction_ReturnsOkResult()
     {
         // Arrange
         int id = 1;
         var transactions = CreateTestTransactions();
         _context.AddRange(transactions);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         // Act
         var result = await _controller.GetTransaction(id);
@@ -193,6 +221,157 @@ public class TransactionsControllerTests {
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
+
+    [Fact]
+    public async Task GetBanks_ReturnsOk_WhenBanksExist()
+    {
+        // Arrange
+        var banks = CreateTestBanks();
+        _context.Banks.AddRange(banks);
+        await _context.SaveChangesAsync();
+
+        // Act
+        var result = await _controller.GetBanks();
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returnedBanks = okResult.Value;
+        Assert.Equal(returnedBanks, okResult.Value);
+    }
+
+    [Fact]
+    public async Task GetBanks_ReturnsNotFound_WhenBanksAreNull()
+    {
+        // Arrange
+        _context.Banks = null;
+
+        // Act
+        var result = await _controller.GetBanks();
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task GetActiveAccounts_ReturnsOk_WhenActiveAccountsExist()
+    {
+        // Arrange
+        var activeAccounts = CreateTestAccounts();
+        _context.Accounts.AddRange(activeAccounts);
+        await _context.SaveChangesAsync();
+
+        // Act
+        var result = await _controller.GetActiveAccounts();
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returnedAccounts = okResult.Value as List<Account>;
+        Assert.True(returnedAccounts.All(acc => acc.Status == true));
+        Assert.Equal(returnedAccounts, okResult.Value);
+    }
+
+    [Fact]
+    public async Task GetActiveAccounts_ReturnsNotFound_WhenActiveAccountsAreNull()
+    {
+        // Arrange
+        _context.Accounts = null;
+
+        // Act
+        var result = await _controller.GetActiveAccounts();
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+
+    private List<Bank> CreateTestBanks()
+    {
+
+        var bank1 = new Bank {
+            Id = 1,
+            Name = "Bank 1",
+            Number = 12345,
+            Accounts = new List<Account> {
+                new Account
+                {
+                    Description = "Account 1",
+                    AccountType = new AccountType
+                    {
+                        Description = "Account Type 1"
+                    }
+                },
+                new Account
+                {
+                    Description = "Account 2",
+                    AccountType = new AccountType
+                    {
+                        Description = "Account Type 2"
+                    }
+                }
+            }
+        };
+
+        var bank2 = new Bank {
+            Id = 2,
+            Name = "Bank 2",
+            Number = 67890,
+            Accounts = new List<Account>
+            {
+                new Account
+                {
+                    Description = "Account 3",
+                    AccountType = new AccountType
+                    {
+                        Description = "Account Type 3"
+                    }
+                }
+            }
+        };
+
+        return new List<Bank> { bank1, bank2 };
+    }
+
+    private List<Account> CreateTestAccounts()
+    {
+        var account1 = new Account {
+            Id = 1,
+            Description = "Account 4",
+            OpeningBalance = 1000.00,
+            Status = true,
+            BankId = 1,
+            Bank = new Bank {
+                Id = 1,
+                Name = "Bank 1",
+                Number = 12345
+            },
+            AccountTypeId = 1,
+            AccountType = new AccountType {
+                Id = 1,
+                Description = "Account Type 1"
+            }
+        };
+
+        var account2 = new Account {
+            Id = 2,
+            Description = "Account 5",
+            OpeningBalance = 1500.00,
+            Status = false,
+            BankId = 2,
+            Bank = new Bank {
+                Id = 2,
+                Name = "Bank 2",
+                Number = 67890
+            },
+            AccountTypeId = 2,
+            AccountType = new AccountType {
+                Id = 2,
+                Description = "Account Type 2"
+            }
+        };
+
+        return new List<Account> { account1, account2 };
+    }
+
+
 
     private List<Transaction> CreateTestTransactions()
     {

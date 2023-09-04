@@ -135,7 +135,8 @@ public class TransactionsController : ControllerBase {
                 return NotFound();
             }
 
-            return await _context.Banks.ToListAsync();
+            var banks = await _context.Banks.ToListAsync();
+            return Ok(banks);
         }
         catch (Exception ex) {
 
@@ -152,9 +153,11 @@ public class TransactionsController : ControllerBase {
                 return NotFound();
             }
 
-            return await _context.Accounts
-                .Where(acc => acc.Status)
+            var result = await _context.Accounts
+                .WhereStatus(true)
                 .ToListAsync();
+
+            return Ok(result);
         }
         catch (Exception ex) {
 

@@ -19,4 +19,10 @@ public static class AccountQueries {
 
         return result;
     }
+
+    public static IQueryable<Account> WhereStatus(this  IQueryable<Account> accounts, bool status)
+    {
+        var result = accounts.Where(acc => acc.Status == status);
+        return result;
+    }
 }
