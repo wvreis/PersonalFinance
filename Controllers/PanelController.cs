@@ -4,6 +4,7 @@ using PersonalFinance.Data;
 using PersonalFinance.DTOs;
 using PersonalFinance.Helpers.APIs;
 using PersonalFinance.Models;
+using PersonalFinance.Queries;
 
 namespace PersonalFinance.Controllers;
 
@@ -50,10 +51,18 @@ public class PanelController : ControllerBase {
     async Task<List<IGrouping<int, Transaction>>> GetTransactionGroups(TransactionNature nature)
     {
         return await _context.Transactions
-            .Where(t => t.Status == Models.TransactionStatus.Completed)
-            .Where(t => t.Nature == nature)
+            .WhereStatus(TransactionStatus.Completed)
+            .WhereNature(nature)
             .GroupBy(t => t.Date.Month)
             .ToListAsync();
+    }
+
+    private List<PanelItem> MapTransactionGroupsToItems(List<IGrouping<int, Transaction>> transactionGroups)
+    {
+        return transactionGroups.Select(group => new PanelItemDTO {
+            Month = group.First().Date.ToString("MMMM"),
+            Amount = group.Sum(t => t.Amount)
+        }).ToList();
     }
     #endregion
 }

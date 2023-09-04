@@ -46,12 +46,24 @@ public static class TransactionQueries {
         return transactions;
     }
 
-    public static IQueryable<Transaction> WhereNature(this IQueryable<Transaction> transactions, TransactionNature? transactionNature = null)
+    public static IQueryable<Transaction> WhereTransactionTypeNature(this IQueryable<Transaction> transactions, TransactionNature? transactionNature = null)
     {
         if (transactionNature.HasValue) {
             var result = transactions
                 .Include(x => x.TransactionType)
                 .Where(t => t.TransactionType.Nature == transactionNature.Value);
+
+            return result;
+        }
+
+        return transactions;
+    }
+
+    public static IQueryable<Transaction> WhereNature(this IQueryable<Transaction> transactions, TransactionNature? transactionNature = null)
+    {
+        if (transactionNature.HasValue) {
+            var result = transactions
+                .Where(t => t.Nature == transactionNature.Value);
 
             return result;
         }
@@ -81,7 +93,7 @@ public static class TransactionQueries {
             .Include(x => x.TransactionType)
             .Include(x => x.Account)
             .WherePeriod(searchModel.StartDate.Value, searchModel.EndDate.Value)
-            .WhereNature(transactionNature)
+            .WhereTransactionTypeNature(transactionNature)
             .WhereAccount(searchModel.AccountId)
             .SearchTransactions(searchModel.SearchInfo, searchVectorInfo)
             .WhereStatus(searchModel.Status)
