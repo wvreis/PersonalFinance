@@ -31,9 +31,8 @@
             "type": "process",
             "args": [
                 "watch",
-                "run",
                 "--project",
-                "${workspaceFolder}/PersonalFinance.sln"
+                "PersonalFinance.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

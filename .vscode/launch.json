@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [        
         {
+            "type": "DotNetWatch",
+            "request": "launch",
+            "name": ".NET Core Watch",
+            "args": [],
+            "env": {    
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
             "name": ".NET Core Launch (web)",
             "type": "coreclr",
             "request": "launch",

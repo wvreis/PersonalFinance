@@ -249,8 +249,8 @@ else {
 }
 
 @code {
-    List<Transaction> Transactions { get; set; }
-    List<Account> Accounts { get; set; }
+    List<Transaction> Transactions { get; set; } = new();
+    List<Account> Accounts { get; set; } = new();
     TransactionSearchModel SearchModel { get; set; } = new();
     (double pending, double completed, double canceled) OutgoingAmounts { get; set; }
     (double pending, double completed, double canceled) IncomingAmounts { get; set; }
@@ -298,7 +298,6 @@ else {
 
     async Task ResetSearch()
     {
-        SearchModel = null;
         SearchModel = new();
         await Search();
     }
