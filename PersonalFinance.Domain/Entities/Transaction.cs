@@ -1,50 +1,32 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using PersonalFinance.Domain.Enums;
 
-namespace PersonalFinance.Domain.Entities; 
+namespace PersonalFinance.Domain.Entities;
 
-public enum TransactionStatus { Pending, Completed, Canceled }
-public enum TransactionNature { Inbound, Outbound };
+public class Transaction : BaseEntity
+{
+    public double Amount { get; private set; }
+    public DateTime Date { get; private set; }
+    public string Description { get; private set; }
+    public TransactionStatus Status { get; private set; }
+    public TransactionNature Nature { get; private set; }
+    public int AccountId { get; private set; }
+    public int TransactionTypeId { get; private set; }
 
-public class Transaction {
-    [Key]
-    public int Id { get; set; }
-
-    [Range(0.01, double.MaxValue, ErrorMessage = "O Valor deve ser informado.")]
-    public double Amount { get; set; }
-
-    [Range(typeof(DateTime), "01/01/2000", "01/01/2500", ErrorMessage = "Uma Data posterior a {0} deve ser informada.")]
-    public DateTime Date { get; set; }
-
-    [Required(ErrorMessage = "Descrição deve ser informada.")]
-    public string Description { get; set; }
-
-    public TransactionStatus Status { get; set; }
-
-    TransactionNature nature;
-    public TransactionNature Nature { 
-        get => nature;
-        set {
-            TransactionType = null;
-            nature = value;
-        }
-    }
-
-    #region FK
-    [ForeignKey(nameof(AccountId))]
-    [Range(1, int.MaxValue, ErrorMessage = "Uma Conta deve ser informada.")]
-    public int AccountId { get; set; }
-    public Account? Account { get; set; }
-
-    [ForeignKey(nameof(TransactionTypeId))]
-    [Range(1, int.MaxValue, ErrorMessage = "Um Tipo de Movimentação deve ser informado.")]
-    public int TransactionTypeId { get; set; }
-    public TransactionType? TransactionType { get; set; }
-    #endregion
-
-    public Transaction()
+    public Transaction(
+        double amount,
+        DateTime date,
+        string description,
+        TransactionStatus status,
+        TransactionNature nature,
+        int accountId,
+        int transactionTypeId)
     {
-        Date = DateTime.Now;
-        Nature = TransactionNature.Outbound;
+        Amount = amount;
+        Date = date;
+        Description = description;
+        Status = status;
+        Nature = nature;
+        AccountId = accountId;
+        TransactionTypeId = transactionTypeId;
     }
 }

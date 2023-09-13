@@ -1,14 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace PersonalFinance.Domain.Entities; 
 
-namespace PersonalFinance.Domain.Entities; public class TransactionTypeGroup {
-    [Key]
-    public int Id { get; set; }
+public class TransactionTypeGroup : BaseEntity
+{
+    public string Description { get; private set; }
 
-    [Required]
-    [StringLength(100)]
-    public string Description { get; set; }
-
-    #region LISTS
-    public List<TransactionType>? TransactionTypes { get; set; }
-    #endregion
+    public TransactionTypeGroup(string description)
+    {
+        Description = description;
+    }
 }

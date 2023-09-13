@@ -1,21 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace PersonalFinance.Domain.Entities;
 
-namespace PersonalFinance.Domain.Entities; public class Bank {
-    [Key]
-    public int Id { get; set; }
+public class Bank
+{
+    public string Name { get; private set; }
+    public int Number { get; private set; }
 
-    [Required]
-    public string Name { get; set; }
-
-    [Range(1, int.MaxValue)]
-    public int Number { get; set; }
-
-    #region LISTS
-    public List<Account>? Accounts { get; set; }
-    #endregion
-
-    public Bank()
+    public Bank(
+        string name,
+        int number)
     {
-            
+        Name = name;
+        Number = number;
     }
 }

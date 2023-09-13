@@ -1,17 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace PersonalFinance.Domain.Entities; 
 
-namespace PersonalFinance.Domain.Entities; 
-public class AccountType {
-    [Key]
-    public int Id { get; set; }
+public class AccountType : BaseEntity
+{
+    public string Description { get; private set; }
+    public bool Status { get; private set; }
+    public List<Account>? Accounts { get; private set; }
 
-    [Required]
-    [StringLength(100)]
-    public string Description { get; set; }
-
-    public bool Status { get; set; }
-
-    #region LISTS
-    public List<Account>? Accounts { get; set; }
-    #endregion
+    public AccountType(
+        string description,
+        bool status,
+        List<Account>? accounts)
+    {
+        Description = description;
+        Status = status;
+        Accounts = accounts;
+    }
 }
