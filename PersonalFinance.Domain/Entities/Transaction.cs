@@ -1,6 +1,4 @@
-﻿using PersonalFinance.Domain.Enums;
-
-namespace PersonalFinance.Domain.Entities;
+﻿namespace PersonalFinance.Domain.Entities;
 
 public class Transaction : BaseEntity
 {

@@ -1,4 +1,4 @@
-namespace PersonalFinance.Domain.Entities;
+namespace PersonalFinance.Domain.Common;
 
 public abstract class BaseEntity
 {
