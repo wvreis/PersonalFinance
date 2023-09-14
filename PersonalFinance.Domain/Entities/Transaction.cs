@@ -8,7 +8,9 @@ public class Transaction : BaseEntity
     public TransactionStatus Status { get; private set; }
     public TransactionNature Nature { get; private set; }
     public int AccountId { get; private set; }
+    public Account Account { get; private set; }
     public int TransactionTypeId { get; private set; }
+    public TransactionType TransactionType { get; private set; }
 
     public Transaction(
         double amount,
@@ -17,7 +19,9 @@ public class Transaction : BaseEntity
         TransactionStatus status,
         TransactionNature nature,
         int accountId,
-        int transactionTypeId)
+        int transactionTypeId,
+        TransactionType transactionType,
+        Account account)
     {
         Amount = amount;
         Date = date;
@@ -26,5 +30,7 @@ public class Transaction : BaseEntity
         Nature = nature;
         AccountId = accountId;
         TransactionTypeId = transactionTypeId;
+        TransactionType = transactionType;
+        Account = account;
     }
 }
