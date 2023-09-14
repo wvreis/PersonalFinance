@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\PersonalFinance.Web.props" />
+</Project>

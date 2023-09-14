@@ -1,0 +1,11 @@
+c:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Domain\bin\Debug\net7.0\PersonalFinance.Domain.deps.json
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Domain\bin\Debug\net7.0\PersonalFinance.Domain.dll
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Domain\bin\Debug\net7.0\PersonalFinance.Domain.pdb
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Domain\obj\Debug\net7.0\PersonalFinance.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Domain\obj\Debug\net7.0\PersonalFinance.Domain.AssemblyInfoInputs.cache
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Domain\obj\Debug\net7.0\PersonalFinance.Domain.AssemblyInfo.cs
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Domain\obj\Debug\net7.0\PersonalFinance.Domain.csproj.CoreCompileInputs.cache
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Domain\obj\Debug\net7.0\PersonalFinance.Domain.dll
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Domain\obj\Debug\net7.0\refint\PersonalFinance.Domain.dll
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Domain\obj\Debug\net7.0\PersonalFinance.Domain.pdb
+c:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Domain\obj\Debug\net7.0\ref\PersonalFinance.Domain.dll

@@ -32,7 +32,7 @@
             "args": [
                 "watch",
                 "--project",
-                "PersonalFinance.csproj"
+                "${workspaceFolder}PersonalFinance.Blazor/PersonalFinance.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

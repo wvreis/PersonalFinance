@@ -1,0 +1,276 @@
+﻿@using PersonalFinance.Blazor.Helpers.APIs;
+@using PersonalFinance.Blazor.Helpers.Routes;
+@using PersonalFinance.Blazor.Helpers;
+@using PersonalFinance.Blazor.Models;
+@attribute [
+    Route(TransactionsRoutes.Addition),
+    Route(TransactionsRoutes.Edition)
+]
+@inherits General
+
+<PageTitle>Movimentações</PageTitle>
+
+@if (Loading) {
+    <div class="rz-m-12">
+        <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+    </div>
+}
+else {
+    <div class="container">
+        <RadzenTemplateForm Data="Transaction" Submit="@((args) => Confirm())" InvalidSubmit="InvalidConfirmation" TItem="Transaction">
+            <DataAnnotationsValidator />
+
+            <RadzenText TextStyle="TextStyle.DisplayH4" class="rz-m-6">
+                @GetHeaderText() Movimentação
+            </RadzenText>
+
+            <RadzenRow Gap="width: 100%">
+                <RadzenColumn Size="12" SizeMD="6">
+                    <RadzenStack Gap="1rem">
+                        <RadzenFieldset Text="Dados">
+                            <RadzenRow AlignItems="AlignItems.Center">
+
+                                <RadzenColumn SizeMD="5">
+                                    <RadzenLabel Text="Natureza" Style="width: 100%" />
+                                    <RadzenDropDown Value=@Transaction.Nature
+                                                    ValueChanged="@((n) => NatureChange(n))"
+                                                    TValue="TransactionNature"
+                                                    Data=@Transaction.NatureDictionary
+                                                    Style="width: 100%;"                                                   
+                                                    ValueProperty="Key"                                                    
+                                                    TextProperty="@(ObjectHelper.GetFullName<Dictionary<TransactionNature, string>, string>(x => x.First().Value))" />
+                                </RadzenColumn>
+
+                                <RadzenColumn SizeMD="4">
+                                    <RadzenLabel Text="Valor" Style="width: 100%" />
+                                    <RadzenNumeric TValue="double"
+                                                   Format="c"
+                                                   @bind-Value=@Transaction.Amount
+                                                   Style="width: 100%"
+                                                   Disabled="@Disabled" />
+                                </RadzenColumn>
+
+                                <RadzenColumn SizeMD="3">
+                                    <RadzenLabel Text="Data" Style="width: 100%" />
+                                    <RadzenDatePicker DateFormat="dd/MM/yyyy"
+                                                      @bind-Value=@Transaction.Date
+                                                      Disabled="@Disabled" />
+                                </RadzenColumn>
+
+                                <RadzenColumn SizeMD="12">
+                                    <RadzenLabel Text="Descrição" Style="width: 100%" Component="Name" />
+                                    <RadzenTextBox @bind-Value="Transaction.Description"
+                                                   Style="width: 100%;"
+                                                   Name="Name"
+                                                   Disabled="@Disabled" />
+                                    <ValidationMessage For="@(() => Transaction.Description)" />
+                                </RadzenColumn>
+
+                                <RadzenColumn SizeMD="6">
+                                    <RadzenLabel Text="Situação" Style="width: 100%" Component="" />
+                                    <RadzenDropDown @bind-Value=@Transaction.Status
+                                                    Data=@ValidStatus.ToList()
+                                                    Style="width: 100%;"
+                                                    ValueProperty="Key"
+                                                    TextProperty="@(ObjectHelper.GetFullName<Dictionary<TransactionStatus, (string text, int style )>, string>(x => x.First().Value.text))"
+                                                    Disabled="@Disabled" />
+                                </RadzenColumn>
+
+                                <RadzenColumn Size="12" SizeMD="6">
+                                    <RadzenLabel Text="Conta" Style="width: 100%" Component="AccountId" />
+                                    <RadzenDropDown @bind-Value="Transaction.AccountId"
+                                                    AllowClear="true"
+                                                    AllowFiltering="true"
+                                                    Placeholder="Selecione..."
+                                                    Data="@Accounts"
+                                                    Style="width: 100%;"
+                                                    TextProperty="@(ObjectHelper.GetFullName<Account, string>(x => x.Description))"
+                                                    ValueProperty="Id"
+                                                    Name="AccountId"
+                                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                    Disabled="@Disabled">
+                                    </RadzenDropDown>
+                                    <RadzenRequiredValidator Component="AccountId" />
+                                    <ValidationMessage For="@(() => Transaction.AccountId)" />
+                                </RadzenColumn>
+
+                                <RadzenColumn Size="12" SizeMD="6">
+                                    <RadzenLabel Text="Tipo de Movimentação" Style="width: 100%" Component="TransactionTypeId" />
+                                    <RadzenDropDown @bind-Value="Transaction.TransactionTypeId"
+                                                    AllowClear="true"
+                                                    AllowFiltering="true"
+                                                    Placeholder="Selecione..."
+                                                    Data="FilteredTrasactionsByNature"
+                                                    Style="width: 100%;"
+                                                    TextProperty="@(ObjectHelper.GetFullName<TransactionType, string>(x => x.Description))"
+                                                    ValueProperty="Id"
+                                                    Name="TransactionTypeId"
+                                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                    Disabled="@Disabled"
+                                                    @ref="TransactionTypeDropDown">
+                                    </RadzenDropDown>
+                                    <RadzenRequiredValidator Component="TransactionTypeId" />
+                                    <ValidationMessage For="@(() => Transaction.TransactionTypeId)" />
+                                </RadzenColumn>
+
+                            </RadzenRow>
+                        </RadzenFieldset>
+                    </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
+
+            <RadzenStack Orientation="Orientation.Horizontal"
+                         JustifyContent="JustifyContent.End"
+                         Gap="1rem"
+                         Class="rz-mt-8 rz-mb-4">
+
+                @if (!Disabled) {
+                    <RadzenButton ButtonType="ButtonType.Submit"
+                                  Size="ButtonSize.Large"
+                                  Icon="save"
+                                  Text="Salvar" />
+                }
+
+                <RadzenButton ButtonStyle="ButtonStyle.Light"
+                              Variant="Variant.Flat"
+                              Size="ButtonSize.Large"
+                              Icon="arrow_back"
+                              Text="Voltar"
+                              Click="Back" />
+
+                @if (!IsNew && !Disabled) {
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger"
+                                  Variant="Variant.Flat"
+                                  Size="ButtonSize.Large"
+                                  Icon="remove"
+                                  Text="Excluir"
+                                  Click="Cancel" />
+                }
+            </RadzenStack>
+        </RadzenTemplateForm>
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    Transaction Transaction { get; set; }
+
+    List<Account> Accounts;
+    List<TransactionType> TransactionTypes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try {
+            await LoadObjects();
+        }
+        catch (Exception ex) {
+
+            await ErrorMsg(ex);
+        }
+    }
+
+    async Task Confirm()
+    {
+        try {
+            CleanDependencys();
+
+            var result = IsNew ? await Addition() : await Edition();
+
+            await CheckResult(result);
+        }
+        catch (Exception ex) {
+
+            await ErrorMsg(ex);
+        }
+    }
+
+    void Back()
+    {
+        NavigationManager.NavigateTo(TransactionsRoutes.Index);
+    }
+
+    async Task Cancel()
+    {
+        try {
+
+            var exclusionConfirmed = await DialogConfirmation("Deseja Confirmar o Cancelamento da Movimentação?", "Cancelamento");
+
+            if (!exclusionConfirmed)
+                return;
+
+            var result = await TransactionsAPI.PutCancelTransaction(Id);
+
+            await CheckResult(result);
+        }
+        catch (Exception ex) {
+
+            await ErrorMsg(ex);
+        }
+    }
+
+    #region EVENTS
+    RadzenDropDown<int> TransactionTypeDropDown;
+
+    void NatureChange(TransactionNature nature)
+    {
+        Transaction.Nature = nature;
+        TransactionTypeDropDown.Reset();
+    }
+    #endregion
+
+    #region AUXILIARY
+    async Task LoadObjects()
+    {
+        Accounts = await TransactionsAPI.GetActiveAccounts();
+        TransactionTypes = await TransactionsAPI.GetAccountTypes();        
+
+        Transaction = IsNew ? new() : await TransactionsAPI.Get(Id);
+    }
+
+    async Task<HttpResponseMessage> Addition() => await TransactionsAPI.PostTransaction(Transaction);
+
+    async Task<HttpResponseMessage> Edition() => await TransactionsAPI.PutTransaction(Id, Transaction);
+
+    string GetHeaderText() => IsNew ? "Incluindo" : "Editando";
+
+    void CleanDependencys()
+    {
+        Transaction.Account = null;
+        Transaction.TransactionType = null;
+    }
+
+    async Task CheckResult(HttpResponseMessage result)
+    {
+        if (!result.IsSuccessStatusCode) {
+            var exMsg = await result.Content.ReadAsStringAsync();
+            throw new Exception(exMsg);
+        }
+
+        NavigationManager.NavigateTo(TransactionsRoutes.GoToIndex());
+    }
+
+    Dictionary<TransactionStatus, (string text, int style)> ValidStatus => 
+        Transaction.Status != TransactionStatus.Canceled ?
+        Transaction.StatusDictionary
+            .Where(x => x.Key != TransactionStatus.Canceled)
+            .ToDictionary(x => x.Key, x => x.Value) :
+        Transaction.StatusDictionary;
+    #endregion
+
+    #region COMPUTED PROPERTIES
+    bool Loading =>
+        Transaction is null ||
+        Accounts is null ||
+        TransactionTypes is null;
+
+    bool IsNew => Id == 0;
+
+    bool Disabled => Transaction.Status == TransactionStatus.Canceled;
+
+    IEnumerable<IGrouping<string, TransactionType>> GroupedTransactionTypes =>
+        TransactionTypes.GroupBy(x => x.TransactionTypeGroup.Description);
+
+    List<TransactionType> FilteredTrasactionsByNature =>
+        TransactionTypes.Where(x => x.Nature == Transaction.Nature).ToList();        
+    #endregion
+}

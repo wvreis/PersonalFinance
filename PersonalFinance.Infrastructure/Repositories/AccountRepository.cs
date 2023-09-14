@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using PersonalFinance.Domain.Entities;
 using PersonalFinance.Domain.Interfaces;
+using PersonalFinance.Infrastructure.Persistence;
 
 namespace PersonalFinance.Infrastructure.Repositories;
 

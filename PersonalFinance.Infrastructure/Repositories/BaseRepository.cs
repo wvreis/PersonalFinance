@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PersonalFinance.Domain.Common;
 using PersonalFinance.Domain.Interfaces;
+using PersonalFinance.Infrastructure.Persistence;
 
 namespace PersonalFinance.Infrastructure.Repositories;
 

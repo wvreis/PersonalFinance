@@ -1,0 +1,48 @@
+﻿@using System.Globalization
+@using PersonalFinance.Blazor.DTOs;
+@using PersonalFinance.Blazor.Helpers.APIs;
+@using PersonalFinance.Blazor.Helpers;
+@inherits General
+@page "/"
+
+<PageTitle>Início</PageTitle>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 my-5">
+            <RadzenCard class="w-100 mb-4">
+                <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
+                <RadzenLabel Text="Mostrar Detalhes dos Valores" For="dataLabels" Style="margin-left: 8px; vertical-align: middle;" />
+            </RadzenCard>
+            
+            <RadzenChart>
+                <RadzenColumnSeries Data="@panelDTO.Incoming" CategoryProperty="Month" Title="Entradas" LineType="LineType.Dashed" ValueProperty="Amount" Fill="green">
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenColumnSeries>
+                <RadzenColumnSeries Data="@panelDTO.Outgoing" CategoryProperty="Month" Title="Saídas" LineType="LineType.Dashed" ValueProperty="Amount" Fill="red">
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenColumnSeries>
+                <RadzenColumnOptions Radius="5" />
+                <RadzenValueAxis Formatter="@FormatAsUSD">
+                    <RadzenGridLines Visible="true" />                    
+                </RadzenValueAxis>
+            </RadzenChart>            
+        </div>
+    </div>
+</div>
+
+@code {
+    PanelDTO panelDTO { get; set; } = new();    
+    bool showDataLabels = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        panelDTO = await PanelAPI.GetPanelItems();
+    }
+
+    string FormatAsUSD(object value)
+    {
+        return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("pt-BR"));
+    }
+    
+}

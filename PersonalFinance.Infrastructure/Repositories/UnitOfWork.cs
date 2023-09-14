@@ -1,4 +1,5 @@
 using PersonalFinance.Domain.Interfaces;
+using PersonalFinance.Infrastructure.Persistence;
 
 namespace PersonalFinance.Infrastructure.Repositories;
 

@@ -18,9 +18,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/net7.0/PersonalFinance.dll",
+            "program": "${workspaceFolder}/PersonalFinance.Blazor/bin/Debug/net7.0/PersonalFinance.Blazor.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/PersonalFinance.Blazor",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "debugWithChrome",
@@ -30,7 +30,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
+                "/Views": "${workspaceFolder}/PersonalFinance.Blazor/Views"
             }
         },
         {

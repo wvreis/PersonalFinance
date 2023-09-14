@@ -1,0 +1,313 @@
+﻿@using PersonalFinance.Blazor.Helpers.APIs;
+@using PersonalFinance.Blazor.Helpers;
+@using PersonalFinance.Blazor.Helpers.Routes;
+@using PersonalFinance.Blazor.Models;
+@using System.Linq.Expressions;
+@using PersonalFinance.Blazor.RequestModels;
+@attribute [
+    Route(TransactionsRoutes.Index)
+]
+@inherits General
+
+<PageTitle>Movimentações</PageTitle>
+
+@if (Loading) {
+    <div class="rz-m-12">
+        <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+    </div>
+}
+else {
+    <div class="container">
+        <RadzenText TextStyle="TextStyle.DisplayH4">
+            Movimentações
+        </RadzenText>
+
+        <RadzenRow Gap="1rem" Class="rz-mt-8 rz-mb-4" Style="width: 100%" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.End">
+            <RadzenColumn Size="3">
+                <RadzenLabel Text="De" />
+                <RadzenDatePicker DateFormat="dd/MM/yyyy"
+                                  Value=@SearchModel.StartDate
+                                  TValue="DateTime"
+                                  Change="@((d) => Search(startDate: d))" />
+            </RadzenColumn>
+
+            <RadzenColumn Size="3">
+                <RadzenLabel Text="Até" />
+                <RadzenDatePicker DateFormat="dd/MM/yyyy"
+                                  Value=@SearchModel.EndDate
+                                  TValue="DateTime"
+                                  Change="@((d) => Search(endDate: d))" />
+            </RadzenColumn>
+
+            <RadzenColumn Size="3">
+                <RadzenDropDown Value=@SearchModel.Status
+                                TValue="TransactionStatus?"
+                                ValueChanged="@((s) => Search(status: s))"
+                                Data=@Transaction.StatusDictionary
+                                Style="width: 100%; max-width: 400px;"
+                                ValueProperty="Key"
+                                AllowClear=true
+                                TextProperty="@(ObjectHelper.GetFullName<Dictionary<TransactionStatus, (string text, int style )>, string>(x => x.First().Value.text))"
+                                Placeholder="Situação..." />
+            </RadzenColumn>
+
+            <RadzenColumn Size="3">
+                <RadzenDropDown Value=@SearchModel.AccountId
+                                TValue="int?"
+                                ValueChanged="@((a) => Search(accountId: a))"
+                                Data=@Accounts
+                                Style="width: 100%; max-width: 400px;"
+                                ValueProperty="Id"
+                                AllowClear=true
+                                TextProperty="@(ObjectHelper.GetFullName<Account, string>(x => x.Description))"
+                                Placeholder="Conta..." />
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow Gap="1rem" Class="rz-mt-8 rz-mb-4" Style="width: 100%" JustifyContent="JustifyContent.SpaceEvenly">
+            <RadzenColumn Size="10">
+                <RadzenTextBox Placeholder="Pesquisar por..."
+                               Style="width: 100%"
+                @bind-Value="@SearchModel.SearchInfo" />
+            </RadzenColumn>
+
+            <RadzenColumn>
+                <RadzenButton Icon="search"
+                              Style="width: 100%"
+                              Click="@(() => Search())" />
+            </RadzenColumn>
+
+            <RadzenColumn>
+                <RadzenButton Icon="history"
+                              Style="width: 100%"
+                              Click="(() => ResetSearch())" />
+            </RadzenColumn>
+
+            <RadzenColumn>
+                <RadzenButton Icon="add"
+                              Style="width: 100%"
+                              Click="NavigateToAddition" />
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenCard Style="width: 100%; padding: 0;" Class="rz-my-12 rz-mx-auto">
+            <RadzenRow Gap="1rem">
+
+                <RadzenColumn Size="12" SizeLG="12" Class="rz-p-4">
+                    <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="0">
+
+                        <RadzenColumn Size="12" SizeMD="4" SizeLG="4">
+                            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0" TextAlign="TextAlign.Center">
+                                Pendentes
+                            </RadzenText>
+
+                            <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center" Style="color:red">
+                                @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", OutgoingAmounts.pending)
+                                <RadzenIcon Icon="arrow_upward" IconStyle="IconStyle.Danger" title="Saída" />
+                            </RadzenText>
+
+                            <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center" Style="color:green">
+                                @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", IncomingAmounts.pending)
+                                <RadzenIcon Icon="arrow_downward" IconStyle="IconStyle.Success" title="Entrada" />
+                            </RadzenText>
+                        </RadzenColumn>
+
+                        <RadzenColumn Size="12" SizeMD="4" SizeLG="4">
+                            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0" TextAlign="TextAlign.Center">
+                                Pagas
+                            </RadzenText>
+
+                            <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center" Style="color:red">
+                                @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", OutgoingAmounts.completed)
+                                <RadzenIcon Icon="arrow_upward" IconStyle="IconStyle.Danger" title="Saída" />
+                            </RadzenText>
+
+                            <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center" Style="color:green">
+                                @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", IncomingAmounts.completed)
+                                <RadzenIcon Icon="arrow_downward" IconStyle="IconStyle.Success" title="Entrada" />
+                            </RadzenText>
+                        </RadzenColumn>
+
+                        <RadzenColumn Size="12" SizeMD="4" SizeLG="4">
+                            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0" TextAlign="TextAlign.Center">
+                                Canceladas
+                            </RadzenText>
+
+                            <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center" Style="color:red">
+                                @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", OutgoingAmounts.canceled)
+                                <RadzenIcon Icon="arrow_upward" IconStyle="IconStyle.Danger" title="Saída" />
+                            </RadzenText>
+
+                            <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center" Style="color:green">
+                                @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", IncomingAmounts.canceled)
+                                <RadzenIcon Icon="arrow_downward" IconStyle="IconStyle.Success" title="Entrada" />
+                            </RadzenText>
+                        </RadzenColumn>
+
+                    </RadzenRow>
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenCard>
+
+        <RadzenDataGrid PageSize="25"
+                        AllowPaging="false"
+                        PagerHorizontalAlign="HorizontalAlign.Left"
+                        ShowPagingSummary="false"
+                        Data="@Transactions"
+                        TItem="Transaction"
+                        ColumnWidth="300px"
+                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                        EmptyText="Não há registros a serem listados.">
+
+            <Columns>
+                <RadzenDataGridColumn TItem="Transaction"
+                                      Property="@(ObjectHelper.GetFullName<Transaction, int>(x => x.Id))"
+                                      Title="#"
+                                      Frozen="true"
+                                      Width="40px"
+                                      TextAlign="TextAlign.Center"
+                                      CssClass=“font-weight-bold” />
+
+                <RadzenDataGridColumn TItem="Transaction"
+                                      Property="@(ObjectHelper.GetFullName<Transaction, string>(x => x.Description))"
+                                      Title="Descrição"
+                                      Frozen="true"
+                                      Width="220px" />
+
+                <RadzenDataGridColumn TItem="Transaction"
+                                      Width="50px"
+                                      Title="Natureza"
+                                      TextAlign="TextAlign.Center">
+
+                    <Template Context="transaction">
+                        @if (transaction.Nature == TransactionNature.Inbound) {
+                            <RadzenIcon Icon="arrow_downward" IconStyle="IconStyle.Success" title="Entrada" />
+                        }
+                        else {
+                            <RadzenIcon Icon="arrow_upward" IconStyle="IconStyle.Danger" title="Saída" />
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+
+
+                <RadzenDataGridColumn TItem="Transaction"
+                                      Property="@(ObjectHelper.GetFullName<Transaction, double>(x => x.Amount))"
+                                      Title="Valor"
+                                      Width="90px">
+
+                    <Template Context="detail">
+                        @String.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C}", detail.Amount)
+                    </Template>
+
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="Transaction"
+                                      Property="@(ObjectHelper.GetFullName<Transaction, DateTime>(x => x.Date))"
+                                      Title="Data"
+                                      Width="90px">
+
+                    <Template Context="data">
+                        @(data.Date.ToString("dd/MM/yyyy"))
+                    </Template>
+
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="Transaction"
+                                      Property="@(ObjectHelper.GetFullName<Transaction, string>(x => x.Account.Description))"
+                                      Title="Conta"
+                                      Width="80px" />
+
+                <RadzenDataGridColumn TItem="Transaction"
+                                      Property="@(ObjectHelper.GetFullName<Transaction, string>(x => x.Account.Description))"
+                                      Title="Situação"
+                                      Width="80px">
+
+                    <Template Context="transaction">
+                        <RadzenBadge BadgeStyle="@((BadgeStyle)Transaction.StatusDictionary.First(x => x.Key == transaction.Status).Value.style)"
+                                     Text="@(Transaction.StatusDictionary.First(x => x.Key == transaction.Status).Value.text)" />
+                    </Template>
+
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="Transaction"
+                                      Property=""
+                                      Title=""
+                                      Width="70px"
+                                      TextAlign="TextAlign.End">
+
+                    <Template Context="transaction">
+                        <a href="@TransactionsRoutes.GoToEdition(transaction.Id)">
+                            <RadzenButton Icon="edit" title="Editar"/>
+                        </a>
+                    </Template>
+
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </div>
+
+}
+
+@code {
+    List<Transaction> Transactions { get; set; } = new();
+    List<Account> Accounts { get; set; } = new();
+    TransactionSearchModel SearchModel { get; set; } = new();
+    (double pending, double completed, double canceled) OutgoingAmounts { get; set; }
+    (double pending, double completed, double canceled) IncomingAmounts { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try {
+            Accounts = await TransactionsAPI.GetAccounts();
+
+            await Search();
+        }
+        catch (Exception ex) {
+
+            await ErrorMsg(ex);
+        }
+    }
+
+    async Task Search(DateTime? startDate = null, DateTime? endDate = null, int? accountId = null, TransactionStatus? status = null)
+    {
+        if (startDate.HasValue) {
+            SearchModel.StartDate = startDate;
+        }
+
+        if (endDate.HasValue) {
+            SearchModel.EndDate = endDate;
+        }
+
+        if (accountId.HasValue) {
+            SearchModel.AccountId = accountId;
+        }
+        else {
+            SearchModel.AccountId = null;
+        }
+
+        SearchModel.Status = status;
+
+        Transactions = await TransactionsAPI.GetSearch(SearchModel);
+
+        var outgoingAmounts = await TransactionsAPI.GetTotalOutgoingAmountForPeriod(SearchModel);
+        OutgoingAmounts = new() { pending = outgoingAmounts.Item1, completed = outgoingAmounts.Item2, canceled = outgoingAmounts.Item3 };
+
+        var incomingAmounts = await TransactionsAPI.GetTotalIncomingAmountForPeriod(SearchModel);
+        IncomingAmounts = new() { pending = incomingAmounts.Item1, completed = incomingAmounts.Item2, canceled = incomingAmounts.Item3 };
+    }
+
+    async Task ResetSearch()
+    {
+        SearchModel = new();
+        await Search();
+    }
+
+    void NavigateToAddition()
+    {
+        NavigationManager.NavigateTo(TransactionsRoutes.GoToAddition());
+    }
+
+    #region VALIDATION
+    bool Loading => Transactions is null;
+    #endregion
+}

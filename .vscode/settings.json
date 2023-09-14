@@ -1,3 +1,6 @@
 {
-    "dotnet.defaultSolution": "PersonalFinance.sln"
+    "dotnet.defaultSolution": "PersonalFinance.sln",
+    "cSpell.words": [
+        "Npgsql"
+    ]
 }

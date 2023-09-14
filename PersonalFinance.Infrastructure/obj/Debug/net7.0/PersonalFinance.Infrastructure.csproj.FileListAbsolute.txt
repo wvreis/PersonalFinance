@@ -1,0 +1,15 @@
+c:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\bin\Debug\net7.0\PersonalFinance.Infrastructure.deps.json
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\bin\Debug\net7.0\PersonalFinance.Infrastructure.dll
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\bin\Debug\net7.0\PersonalFinance.Infrastructure.pdb
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\bin\Debug\net7.0\PersonalFinance.Domain.dll
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\bin\Debug\net7.0\PersonalFinance.Domain.pdb
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\obj\Debug\net7.0\PersonalFinance.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\obj\Debug\net7.0\PersonalFinance.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\obj\Debug\net7.0\PersonalFinance.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\obj\Debug\net7.0\PersonalFinance.Infrastructure.AssemblyInfo.cs
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\obj\Debug\net7.0\PersonalFinance.Infrastructure.csproj.CoreCompileInputs.cache
+c:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\obj\Debug\net7.0\PersonalFinance.Infrastructure.csproj.CopyComplete
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\obj\Debug\net7.0\PersonalFinance.Infrastructure.dll
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\obj\Debug\net7.0\refint\PersonalFinance.Infrastructure.dll
+C:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\obj\Debug\net7.0\PersonalFinance.Infrastructure.pdb
+c:\Users\wv_re\source\repos\PersonalFinance\PersonalFinance.Infrastructure\obj\Debug\net7.0\ref\PersonalFinance.Infrastructure.dll
